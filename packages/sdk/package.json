@@ -1,0 +1,33 @@
+{
+  "name": "@subtaste/sdk",
+  "version": "0.1.0",
+  "description": "SDK for integrating THE TWELVE taste profiling into your apps",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
+    "./react": "./src/react/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@subtaste/core": "workspace:*",
+    "@subtaste/profiler": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/react": "^19"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

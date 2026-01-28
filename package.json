@@ -1,0 +1,21 @@
+{
+  "name": "subtaste-twelve",
+  "version": "0.1.0",
+  "private": true,
+  "description": "THE TWELVE - Taste genome profiling for the creative economy",
+  "scripts": {
+    "dev": "pnpm --filter @subtaste/web dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "vitest run",
+    "clean": "rm -rf node_modules packages/*/node_modules apps/*/node_modules"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.4"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20"
+  }
+}
