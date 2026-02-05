@@ -106,3 +106,43 @@ export type {
   OrchestratorEvent,
   EventHandler
 } from './progressive';
+
+// ============================================================================
+// TRAINING
+// ============================================================================
+
+export {
+  TRAINING_PROMPTS,
+  generateTrainingCard,
+  createTrainingSession,
+  generateTrainingSignals,
+  calculateTrainingXP
+} from './instruments/training';
+
+export type {
+  TrainingPrompt,
+  TrainingCard,
+  TrainingSubmission
+} from './instruments/training';
+
+// ============================================================================
+// AXES
+// ============================================================================
+
+export {
+  AXES_QUESTIONS,
+  getAllAxesQuestions,
+  getAxesQuestion,
+  getAxesQuestionByAxis,
+  validateAxesResponse,
+  normalizeAxesResponse,
+  calculateAxesDistance,
+  interpretAxisValue,
+  interpretAxesResponse
+} from './instruments/axes';
+
+export type {
+  AxisType,
+  AxesQuestion,
+  AxesResponse
+} from './instruments/axes';

@@ -39,7 +39,7 @@ export default function HomePage() {
 
           <p className="text-bone-faint text-sm mb-12 max-w-md mx-auto">
             Discover which of THE TWELVE archetypes shapes your creative taste.
-            Three questions to begin. Deeper calibration unlocks over time.
+            Begin with training or take the three-question quiz. Deeper calibration unlocks over time.
           </p>
 
           <div className="space-y-4">
@@ -52,6 +52,22 @@ export default function HomePage() {
                 >
                   View Profile
                 </button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => router.push('/training')}
+                  >
+                    Training
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => router.push('/axes')}
+                  >
+                    Axes Calibration
+                  </button>
+                </div>
                 <div>
                   <button
                     type="button"
@@ -63,13 +79,26 @@ export default function HomePage() {
                 </div>
               </>
             ) : (
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => router.push('/quiz')}
-              >
-                Begin
-              </button>
+              <div className="flex flex-col gap-3">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => router.push('/training')}
+                >
+                  Start with Training
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => router.push('/quiz')}
+                >
+                  Take the Quiz
+                </button>
+                <p className="text-bone-faint text-xs mt-2">
+                  Training builds your taste profile through preference cards.
+                  Quiz provides quick classification.
+                </p>
+              </div>
             )}
           </div>
 

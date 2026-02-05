@@ -200,21 +200,49 @@ export default function ProfilePage() {
 
         {/* Actions */}
         <div className="container-sm px-4 pb-16">
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => router.push('/quiz')}
-            >
-              Retake quiz
-            </button>
-            <button
-              type="button"
-              className="btn-ghost text-bone-faint"
-              onClick={() => router.push('/')}
-            >
-              Home
-            </button>
+          <div className="flex flex-col gap-6">
+            {/* Primary Actions */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => router.push('/advanced')}
+              >
+                Advanced Profile
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => router.push('/training')}
+              >
+                Training
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => router.push('/axes')}
+              >
+                Axes Calibration
+              </button>
+            </div>
+
+            {/* Secondary Actions */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                type="button"
+                className="btn-ghost text-bone-muted"
+                onClick={() => router.push('/quiz')}
+              >
+                Retake quiz
+              </button>
+              <button
+                type="button"
+                className="btn-ghost text-bone-faint"
+                onClick={() => router.push('/')}
+              >
+                Home
+              </button>
+            </div>
           </div>
         </div>
       </motion.div>

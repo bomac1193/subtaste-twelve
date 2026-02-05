@@ -29,7 +29,11 @@ export type {
   TasteGenome,
   TasteGenomePublic,
   GenomeCreateInput,
-  GenomeUpdateInput
+  GenomeUpdateInput,
+  HexagramReading,
+  KeywordScores,
+  Gamification,
+  SubtasteContext
 } from './genome';
 
 // Signal types

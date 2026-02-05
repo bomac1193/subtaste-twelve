@@ -11,11 +11,15 @@
     "clean": "rm -rf node_modules packages/*/node_modules apps/*/node_modules"
   },
   "devDependencies": {
+    "prisma": "^7.3.0",
     "typescript": "^5.7.3",
     "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@9.15.4",
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.3.0"
   }
 }

@@ -33,6 +33,10 @@ export type {
   TasteGenomePublic,
   GenomeCreateInput,
   GenomeUpdateInput,
+  HexagramReading,
+  KeywordScores,
+  Gamification,
+  SubtasteContext,
 
   // Signal types
   SignalType,
@@ -150,3 +154,31 @@ export {
 } from './context';
 
 export type { StandardContext, ContextDetection } from './context';
+
+// ============================================================================
+// I-CHING
+// ============================================================================
+
+export {
+  findHexagram,
+  getHexagram,
+  getAllHexagrams,
+  deriveHexagramReading,
+  toPublicHexagram
+} from './iching';
+
+export type { Hexagram } from './iching';
+
+// ============================================================================
+// KEYWORDS
+// ============================================================================
+
+export {
+  categorizeKeywords,
+  updateKeywordScores,
+  getTopKeywords,
+  getAttractedKeywords,
+  getRepelledKeywords,
+  mergeKeywordScores,
+  getKeywordStats
+} from './engine/keywords';

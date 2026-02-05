@@ -8,10 +8,14 @@
 import type { Designation, Glyph, Sigil, CreativeMode, ArchetypePublic } from '../types';
 
 /**
- * Full archetype definition including user-facing copy
+ * Full archetype definition including user-facing copy and Boveda enrichments
  */
 export interface ArchetypeDefinition extends ArchetypePublic {
   recogniseBy: string;
+  phase?: 'genesis' | 'vision' | 'refinement' | 'manifestation' | 'flow';
+  wuXingElement?: 'wood' | 'fire' | 'earth' | 'metal' | 'water';
+  growthTarget?: Designation;
+  stressTarget?: Designation;
 }
 
 /**
@@ -25,7 +29,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'The unmarked throne. First without announcement.',
     creativeMode: 'Visionary',
     shadow: 'Paralysis by standard. Nothing meets the mark.',
-    recogniseBy: 'Others unconsciously defer to their judgment. They rarely explain themselves. When they speak, rooms reorganise.'
+    recogniseBy: 'Others unconsciously defer to their judgment. They rarely explain themselves. When they speak, rooms reorganise.',
+    phase: 'vision',
+    wuXingElement: 'wood',
+    growthTarget: 'D-8',
+    stressTarget: 'R-10'
   },
 
   'T-1': {
@@ -35,7 +43,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'The hidden architecture. Layers beneath surfaces.',
     creativeMode: 'Architectural',
     shadow: 'Over-engineering. The system becomes the end.',
-    recogniseBy: 'They explain systems you did not know existed. They build frameworks before building anything else.'
+    recogniseBy: 'They explain systems you did not know existed. They build frameworks before building anything else.',
+    phase: 'refinement',
+    wuXingElement: 'metal',
+    growthTarget: 'N-5',
+    stressTarget: 'P-7'
   },
 
   'V-2': {
@@ -45,7 +57,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'What arrives before itself. The shape of the unformed.',
     creativeMode: 'Prophetic',
     shadow: 'Cassandra syndrome. Right too soon.',
-    recogniseBy: 'Their recommendations age well. Years later, you remember what they said.'
+    recogniseBy: 'Their recommendations age well. Years later, you remember what they said.',
+    phase: 'vision',
+    wuXingElement: 'wood',
+    growthTarget: 'L-3',
+    stressTarget: 'C-4'
   },
 
   'L-3': {
@@ -55,7 +71,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'Patient sediment. What accumulates in darkness.',
     creativeMode: 'Developmental',
     shadow: 'Endless patience becomes enabling.',
-    recogniseBy: 'Long memory. They remember what you showed them three years ago. They are still watching.'
+    recogniseBy: 'Long memory. They remember what you showed them three years ago. They are still watching.',
+    phase: 'manifestation',
+    wuXingElement: 'earth',
+    growthTarget: 'S-0',
+    stressTarget: 'D-8'
   },
 
   'C-4': {
@@ -65,7 +85,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'The necessary cut. What must be removed, removed.',
     creativeMode: 'Editorial',
     shadow: 'Nihilistic rejection. Nothing survives.',
-    recogniseBy: 'Sparse playlists. Brutal honesty. They will tell you what is wrong before what is right.'
+    recogniseBy: 'Sparse playlists. Brutal honesty. They will tell you what is wrong before what is right.',
+    phase: 'refinement',
+    wuXingElement: 'metal',
+    growthTarget: 'H-6',
+    stressTarget: 'R-10'
   },
 
   'N-5': {
@@ -75,7 +99,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'To illuminate by edge. The binding outline.',
     creativeMode: 'Integrative',
     shadow: 'Pathological balance. Refuses to choose.',
-    recogniseBy: 'Unexpected pairings that work. Playlists that should not cohere but do.'
+    recogniseBy: 'Unexpected pairings that work. Playlists that should not cohere but do.',
+    phase: 'flow',
+    wuXingElement: 'water',
+    growthTarget: 'V-2',
+    stressTarget: 'Ø'
   },
 
   'H-6': {
@@ -85,7 +113,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'The bell that cannot be unheard. The summons.',
     creativeMode: 'Advocacy',
     shadow: 'Missionary zeal. Sharing becomes shoving.',
-    recogniseBy: 'Relentless enthusiasm. They have sent you the same link three times. They are right, and they know it.'
+    recogniseBy: 'Relentless enthusiasm. They have sent you the same link three times. They are right, and they know it.',
+    phase: 'manifestation',
+    wuXingElement: 'earth',
+    growthTarget: 'T-1',
+    stressTarget: 'F-9'
   },
 
   'P-7': {
@@ -95,7 +127,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'What is kept. Writing over writing.',
     creativeMode: 'Archival',
     shadow: 'Hoarding. Knowledge that never circulates.',
-    recogniseBy: 'They cite sources you have never heard of. They own formats you cannot play.'
+    recogniseBy: 'They cite sources you have never heard of. They own formats you cannot play.',
+    phase: 'flow',
+    wuXingElement: 'water',
+    growthTarget: 'C-4',
+    stressTarget: 'L-3'
   },
 
   'D-8': {
@@ -105,7 +141,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'Draws flame upward without burning. The hollow channel.',
     creativeMode: 'Channelling',
     shadow: 'Dissolution. The channel consumes the self.',
-    recogniseBy: 'Uncanny recommendations. They cannot always explain why. They just knew.'
+    recogniseBy: 'Uncanny recommendations. They cannot always explain why. They just knew.',
+    phase: 'flow',
+    wuXingElement: 'water',
+    growthTarget: 'F-9',
+    stressTarget: 'N-5'
   },
 
   'F-9': {
@@ -115,7 +155,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'Where pressure becomes form. The manifestation point.',
     creativeMode: 'Manifestation',
     shadow: 'Crude materialism. Only what ships matters.',
-    recogniseBy: 'They have built something. While others talked, they shipped.'
+    recogniseBy: 'They have built something. While others talked, they shipped.',
+    phase: 'genesis',
+    wuXingElement: 'fire',
+    growthTarget: 'N-5',
+    stressTarget: 'C-4'
   },
 
   'R-10': {
@@ -125,7 +169,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'The productive fracture. What breaks to reveal grain.',
     creativeMode: 'Contrarian',
     shadow: 'Reflexive opposition. Disagreement as identity.',
-    recogniseBy: 'Their takes age strangely. What seemed wrong becomes obvious. Or does not.'
+    recogniseBy: 'Their takes age strangely. What seemed wrong becomes obvious. Or does not.',
+    phase: 'genesis',
+    wuXingElement: 'fire',
+    growthTarget: 'H-6',
+    stressTarget: 'S-0'
   },
 
   'Ø': {
@@ -135,7 +183,11 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     essence: 'The deliberate absence. What receives by containing nothing.',
     creativeMode: 'Receptive',
     shadow: 'Passivity. Reception without response.',
-    recogniseBy: 'They listen longer than anyone. Their recommendations feel like mirrors.'
+    recogniseBy: 'They listen longer than anyone. Their recommendations feel like mirrors.',
+    phase: 'flow',
+    wuXingElement: 'water',
+    growthTarget: 'R-10',
+    stressTarget: 'T-1'
   }
 } as const;
 

@@ -58,6 +58,54 @@ export interface ContextProfile {
 export type Domain = 'music' | 'visual' | 'textual' | 'spatial';
 
 /**
+ * I-Ching hexagram information
+ */
+export interface HexagramReading {
+  present: {
+    number: number;
+    name: string;
+    chinese: string;
+    judgment: string;
+  };
+  transforming?: {
+    number: number;
+    name: string;
+    chinese: string;
+    judgment: string;
+  };
+  movingLines: number[];
+}
+
+/**
+ * Keyword scores for visual and content categories
+ */
+export interface KeywordScores {
+  visual: Record<string, { score: number; count: number }>;
+  content: Record<string, { score: number; count: number }>;
+}
+
+/**
+ * Gamification tracking
+ */
+export interface Gamification {
+  xp: number;
+  tier: number;
+  achievements: string[];
+  streak: number;
+  totalTrainings: number;
+}
+
+/**
+ * Subtaste context enrichment from Boveda
+ */
+export interface SubtasteContext {
+  phase: 'genesis' | 'vision' | 'refinement' | 'manifestation' | 'flow';
+  wuXingElement: 'wood' | 'fire' | 'earth' | 'metal' | 'water';
+  growthTarget: Designation;
+  stressTarget: Designation;
+}
+
+/**
  * Full TasteGenome structure
  */
 export interface TasteGenome {
@@ -102,6 +150,26 @@ export interface TasteGenome {
     tasteTypicality: number;
     domainStrengths: Record<Domain, number>;
   };
+
+  // PERSONALITY AXES (from Boveda)
+  axes?: {
+    orderChaos: number;          // 0-1
+    mercyRuthlessness: number;   // 0-1
+    introvertExtrovert: number;  // 0-1
+    faithDoubt: number;          // 0-1
+  };
+
+  // I-CHING HEXAGRAM READING
+  iching?: HexagramReading;
+
+  // KEYWORD LEARNING (from Slayt)
+  keywords?: KeywordScores;
+
+  // GAMIFICATION
+  gamification?: Gamification;
+
+  // SUBTASTE CONTEXT (from Boveda enrichment)
+  subtasteContext?: SubtasteContext;
 }
 
 /**

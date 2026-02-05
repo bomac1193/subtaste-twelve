@@ -9,7 +9,7 @@ import type { TasteGenome } from '@subtaste/core';
 /**
  * Stage identifiers
  */
-export type StageId = 'initial' | 'music' | 'deep';
+export type StageId = 'training' | 'initial' | 'axes' | 'music' | 'deep';
 
 /**
  * Stage trigger types
@@ -36,6 +36,16 @@ export interface ProfilingStage {
  */
 export const PROFILING_STAGES: ProfilingStage[] = [
   {
+    id: 'training',
+    name: 'Taste Training',
+    description: 'Pick best and worst from creative scenarios.',
+    trigger: 'onboarding',
+    questionCount: 15,
+    estimatedSeconds: 120,
+    confidenceGain: 0.25,
+    prerequisites: []
+  },
+  {
     id: 'initial',
     name: 'Initial Spark',
     description: 'Three questions to discover your primary Glyph.',
@@ -43,7 +53,17 @@ export const PROFILING_STAGES: ProfilingStage[] = [
     questionCount: 3,
     estimatedSeconds: 30,
     confidenceGain: 0.3,
-    prerequisites: []
+    prerequisites: ['training']
+  },
+  {
+    id: 'axes',
+    name: 'Personality Axes',
+    description: 'Four dimensions to reveal your I-Ching hexagram.',
+    trigger: 'onboarding',
+    questionCount: 4,
+    estimatedSeconds: 45,
+    confidenceGain: 0.1,
+    prerequisites: ['initial']
   },
   {
     id: 'music',
