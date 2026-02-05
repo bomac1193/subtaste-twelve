@@ -19,7 +19,7 @@ import {
   type BinaryQuestion,
   type RankingQuestion,
 } from '@subtaste/profiler';
-import { getUser, setUser, completeStage } from '@/lib/storage';
+import { getUser, setUser, completeStage } from '@/lib/storage-prisma';
 
 type StageId = 'music' | 'deep';
 
@@ -44,7 +44,7 @@ export async function POST(
       return NextResponse.json({ error: 'No responses provided' }, { status: 400 });
     }
 
-    const user = getUser(userId);
+    const user = await getUser(userId);
 
     if (!user || !user.genome) {
       return NextResponse.json({ error: 'User not found or no genome' }, { status: 404 });
@@ -135,8 +135,8 @@ export async function POST(
     });
 
     // Store and mark stage complete
-    setUser(userId, { genome: updatedGenome });
-    completeStage(userId, stage);
+    await setUser(userId, { genome: updatedGenome });
+    await completeStage(userId, stage);
 
     const publicGenome = toPublicGenome(updatedGenome);
     const archetype = PANTHEON[result.classification.primary.designation as Designation];

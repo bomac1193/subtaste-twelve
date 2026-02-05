@@ -4,7 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createTrainingSession } from '@subtaste/profiler';
-import { createUser, getUser } from '@/lib/storage';
+import { createUser, getUser } from '@/lib/storage-prisma';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,10 +14,10 @@ export async function POST(request: NextRequest) {
     // Create or use existing user
     let userId = existingUserId;
     if (!userId) {
-      userId = createUser();
+      userId = await createUser();
     } else {
       // Verify user exists
-      const user = getUser(userId);
+      const user = await getUser(userId);
       if (!user) {
         return NextResponse.json(
           { error: 'User not found' },

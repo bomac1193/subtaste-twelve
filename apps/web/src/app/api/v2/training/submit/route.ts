@@ -16,7 +16,7 @@ import {
   type Signal,
   type Designation
 } from '@subtaste/core';
-import { getUser, setUser, incrementSignals } from '@/lib/storage';
+import { getUser, setUser, incrementSignals } from '@/lib/storage-prisma';
 
 export async function POST(request: NextRequest) {
   try {
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user
-    const user = getUser(userId);
+    const user = await getUser(userId);
     if (!user || !user.genome) {
       return NextResponse.json(
         { error: 'User not found or profile not initialized' },
@@ -144,8 +144,8 @@ export async function POST(request: NextRequest) {
     };
 
     // Store updated genome
-    setUser(userId, { genome: updatedGenome });
-    incrementSignals(userId, signals.length);
+    await setUser(userId, { genome: updatedGenome });
+    await incrementSignals(userId, signals.length);
 
     return NextResponse.json({
       success: true,

@@ -1,19 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/lib/session-client';
 
 export default function HomePage() {
   const router = useRouter();
-  const [hasProfile, setHasProfile] = useState<boolean | null>(null);
+  const { isAuthenticated, isLoading } = useAuth();
 
-  useEffect(() => {
-    const userId = localStorage.getItem('subtaste_user_id');
-    setHasProfile(!!userId);
-  }, []);
-
-  if (hasProfile === null) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="w-6 h-6 border-2 border-bone-faint border-t-bone rounded-full animate-spin" />
@@ -43,7 +38,7 @@ export default function HomePage() {
           </p>
 
           <div className="space-y-4">
-            {hasProfile ? (
+            {isAuthenticated ? (
               <>
                 <button
                   type="button"
@@ -72,9 +67,9 @@ export default function HomePage() {
                   <button
                     type="button"
                     className="btn-ghost text-bone-faint"
-                    onClick={() => router.push('/quiz')}
+                    onClick={() => router.push('/advanced')}
                   >
-                    Retake Quiz
+                    Advanced Menu
                   </button>
                 </div>
               </>
@@ -83,20 +78,20 @@ export default function HomePage() {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={() => router.push('/training')}
+                  onClick={() => router.push('/auth/signup')}
                 >
-                  Start with Training
+                  Create Account
                 </button>
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={() => router.push('/quiz')}
+                  onClick={() => router.push('/auth/signin')}
                 >
-                  Take the Quiz
+                  Sign In
                 </button>
                 <p className="text-bone-faint text-xs mt-2">
-                  Training builds your taste profile through preference cards.
-                  Quiz provides quick classification.
+                  Create an account to build your taste profile through training,
+                  axes calibration, and I Ching hexagram derivation.
                 </p>
               </div>
             )}

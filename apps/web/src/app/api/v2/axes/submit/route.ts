@@ -13,7 +13,7 @@ import {
   toPublicHexagram,
   type HexagramReading
 } from '@subtaste/core';
-import { getUser, setUser, completeStage } from '@/lib/storage';
+import { getUser, setUser, completeStage } from '@/lib/storage-prisma';
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user
-    const user = getUser(userId);
+    const user = await getUser(userId);
     if (!user || !user.genome) {
       return NextResponse.json(
         { error: 'User not found or profile not initialized' },
@@ -64,8 +64,8 @@ export async function POST(request: NextRequest) {
     };
 
     // Store updated genome
-    setUser(userId, { genome: updatedGenome });
-    completeStage(userId, 'axes');
+    await setUser(userId, { genome: updatedGenome });
+    await completeStage(userId, 'axes');
 
     // Convert to public format for client
     const publicHexagram = toPublicHexagram(hexagramReading.present);

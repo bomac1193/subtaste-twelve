@@ -11,7 +11,7 @@ import {
   type Signal,
   type ImplicitSignal,
 } from '@subtaste/core';
-import { getUser, setUser, incrementSignals } from '@/lib/storage';
+import { getUser, setUser, incrementSignals } from '@/lib/storage-prisma';
 
 export async function POST(
   request: NextRequest,
@@ -27,7 +27,7 @@ export async function POST(
       return NextResponse.json({ error: 'No signals provided' }, { status: 400 });
     }
 
-    const user = getUser(userId);
+    const user = await getUser(userId);
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -48,7 +48,7 @@ export async function POST(
     }));
 
     // Increment signal count
-    const newCount = incrementSignals(userId, signals.length);
+    const newCount = await incrementSignals(userId, signals.length);
 
     // If genome exists, reclassify
     if (user.genome) {
@@ -75,7 +75,7 @@ export async function POST(
         orishaResonance: result.orishaResonance,
       });
 
-      setUser(userId, { genome: updatedGenome });
+      await setUser(userId, { genome: updatedGenome });
     }
 
     return NextResponse.json({
@@ -98,7 +98,7 @@ export async function GET(
 ) {
   const { userId } = await params;
 
-  const user = getUser(userId);
+  const user = await getUser(userId);
 
   if (!user) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });

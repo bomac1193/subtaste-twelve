@@ -14,7 +14,7 @@ import {
   type Designation
 } from '@subtaste/core';
 import { INITIAL_QUESTIONS, type BinaryQuestion } from '@subtaste/profiler';
-import { createUser, setUser, getUser, completeStage } from '@/lib/storage';
+import { createUser, setUser, getUser, completeStage } from '@/lib/storage-prisma';
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create or use existing user
-    const userId = existingUserId || createUser();
+    const userId = existingUserId || await createUser();
 
     // Convert responses to signals
     const signals: Signal[] = responses.map((r: { questionId: string; response: number }) => {
@@ -69,8 +69,8 @@ export async function POST(request: NextRequest) {
     });
 
     // Store
-    setUser(userId, { genome });
-    completeStage(userId, 'initial');
+    await setUser(userId, { genome });
+    await completeStage(userId, 'initial');
 
     const publicGenome = toPublicGenome(genome);
 
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'userId required' }, { status: 400 });
   }
 
-  const user = getUser(userId);
+  const user = await getUser(userId);
 
   if (!user) {
     return NextResponse.json({

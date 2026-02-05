@@ -4,7 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { toPublicGenome, PANTHEON, type Designation } from '@subtaste/core';
-import { getUser } from '@/lib/storage';
+import { getUser } from '@/lib/storage-prisma';
 
 export async function GET(
   _request: NextRequest,
@@ -12,7 +12,7 @@ export async function GET(
 ) {
   const { userId } = await params;
 
-  const user = getUser(userId);
+  const user = await getUser(userId);
 
   if (!user || !user.genome) {
     return NextResponse.json(

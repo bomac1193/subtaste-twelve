@@ -4,7 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { PANTHEON, type Designation } from '@subtaste/core';
-import { getUser, revealSigil } from '@/lib/storage';
+import { getUser, revealSigil } from '@/lib/storage-prisma';
 
 export async function POST(
   _request: NextRequest,
@@ -12,7 +12,7 @@ export async function POST(
 ) {
   const { userId } = await params;
 
-  const user = getUser(userId);
+  const user = await getUser(userId);
 
   if (!user || !user.genome) {
     return NextResponse.json(
@@ -21,7 +21,7 @@ export async function POST(
     );
   }
 
-  revealSigil(userId);
+  await revealSigil(userId);
 
   const designation = user.genome.classification.primary.designation;
   const archetype = PANTHEON[designation as Designation];
@@ -39,7 +39,7 @@ export async function GET(
 ) {
   const { userId } = await params;
 
-  const user = getUser(userId);
+  const user = await getUser(userId);
 
   if (!user || !user.genome) {
     return NextResponse.json(
