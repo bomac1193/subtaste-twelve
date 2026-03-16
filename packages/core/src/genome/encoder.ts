@@ -12,6 +12,8 @@ import type {
 } from '../types';
 import { classify, type ClassificationResult } from '../engine/classifier';
 import { createGenome, incrementVersion } from './schema';
+import { extractMotivationDeltas, applyMotivationDeltas, getDefaultMotivation } from '../engine/motivation';
+import { extractSocialDeltas, applySocialDeltas, getDefaultSocial } from '../engine/social';
 
 /**
  * Encode signals into a new TasteGenome
@@ -65,6 +67,20 @@ export function updateGenomeWithSignals(
     processedAt: now
   }));
 
+  // Update motivation from signal behavior
+  const motivationDeltas = extractMotivationDeltas(newSignals);
+  const updatedMotivation = applyMotivationDeltas(
+    genome.motivation || getDefaultMotivation(),
+    motivationDeltas
+  );
+
+  // Update social dynamics from signal behavior
+  const socialDeltas = extractSocialDeltas(newSignals);
+  const updatedSocial = applySocialDeltas(
+    genome.socialDynamics || getDefaultSocial(),
+    socialDeltas
+  );
+
   return {
     ...genome,
     version: genome.version + 1,
@@ -84,7 +100,10 @@ export function updateGenomeWithSignals(
       signalHistory: [...genome.behaviour.signalHistory, ...signalEvents].slice(-1000), // Keep last 1000
       confidence: result.classification.primary.confidence,
       lastCalibration: now
-    }
+    },
+
+    motivation: updatedMotivation,
+    socialDynamics: updatedSocial
   };
 }
 

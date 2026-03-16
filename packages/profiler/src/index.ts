@@ -34,7 +34,16 @@ export {
   // Implicit signals
   behaviourToSignal,
   behaviourBatchToSignals,
-  calculateBehaviouralStrength
+  calculateBehaviouralStrength,
+
+  // Drive & dynamics assessment
+  createDriveAssessment,
+  getCurrentDriveQuestion,
+  submitDriveResponse,
+  isDriveComplete,
+  getDriveProgress,
+  completeDriveAssessment,
+  estimateDriveTimeRemaining
 } from './instruments';
 
 export type {
@@ -44,7 +53,10 @@ export type {
   CalibrationState,
   CalibrationResult,
   BehaviouralEvent,
-  ItemMetadata
+  ItemMetadata,
+  DriveAssessmentState,
+  DriveResponse,
+  DriveAssessmentResult
 } from './instruments';
 
 // ============================================================================
@@ -74,7 +86,15 @@ export type {
   BinaryResponse,
   LikertResponse,
   RankingResponse,
-  QuestionResponse
+  QuestionResponse,
+  MotivationQuestion,
+  MotivationWeights
+} from './questions';
+
+export {
+  MOTIVATION_QUESTIONS,
+  SOCIAL_QUESTIONS,
+  ALL_DRIVE_QUESTIONS
 } from './questions';
 
 // ============================================================================

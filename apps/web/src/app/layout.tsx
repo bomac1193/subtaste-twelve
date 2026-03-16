@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { SessionProvider } from '@/components/providers/SessionProvider';
+import { DebugProvider } from '@/contexts/DebugContext';
+import { DebugToggle } from '@/components/DebugToggle';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -36,9 +38,12 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} ${jetbrains.variable} antialiased`}
       >
-        <SessionProvider>
-          {children}
-        </SessionProvider>
+        <DebugProvider>
+          <SessionProvider>
+            {children}
+            <DebugToggle />
+          </SessionProvider>
+        </DebugProvider>
       </body>
     </html>
   );

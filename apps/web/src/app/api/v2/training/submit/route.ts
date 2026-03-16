@@ -103,6 +103,10 @@ export async function POST(request: NextRequest) {
     // Update genome with new signals
     const updatedGenome = updateGenomeWithSignals(user.genome, signals);
 
+    // Debug: Log confidence value
+    console.log('[Training] Updated genome confidence:', updatedGenome.behaviour?.confidence);
+    console.log('[Training] Primary archetype confidence:', updatedGenome.archetype?.primary?.confidence);
+
     // Extract and update keywords from both best and worst text
     let currentKeywords = updatedGenome.keywords || { visual: {}, content: {} };
 

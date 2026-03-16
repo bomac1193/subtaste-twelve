@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProfilingQuiz } from '@/components/profiling/ProfilingQuiz';
 import { GlyphReveal } from '@/components/profiling/GlyphReveal';
+import { useDebug } from '@/contexts/DebugContext';
 import {
   PANTHEON,
   type Glyph,
@@ -37,6 +38,7 @@ interface GenomeResult {
 
 export default function QuizPage() {
   const router = useRouter();
+  const { isDebugMode, setDebugUserId } = useDebug();
   const [state, setState] = useState<QuizState>('intro');
   const [result, setResult] = useState<GenomeResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -89,14 +91,20 @@ export default function QuizPage() {
         } : undefined,
       });
 
-      localStorage.setItem('subtaste_user_id', data.userId);
+      // Save to appropriate storage based on debug mode
+      if (isDebugMode) {
+        localStorage.setItem('subtaste_debug_user_id', data.userId);
+        setDebugUserId(data.userId);
+      } else {
+        localStorage.setItem('subtaste_user_id', data.userId);
+      }
       setState('reveal');
     } catch (err) {
       console.error('Quiz error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
       setState('quiz');
     }
-  }, []);
+  }, [isDebugMode, setDebugUserId]);
 
   const handleSigilReveal = useCallback(async () => {
     if (!result) return;
@@ -112,7 +120,7 @@ export default function QuizPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-void">
+    <div className={`min-h-screen bg-void ${isDebugMode ? 'pt-12' : ''}`}>
       <AnimatePresence mode="wait">
         {state === 'intro' && (
           <motion.div
@@ -130,6 +138,13 @@ export default function QuizPage() {
               <h1 className="font-display text-3xl md:text-4xl text-bone mb-4 tracking-tight">
                 THE TWELVE
               </h1>
+              {isDebugMode && (
+                <div className="mb-3">
+                  <span className="inline-block px-3 py-1 bg-state-warning/20 text-state-warning text-xs font-mono rounded-full border border-state-warning/40">
+                    🐛 Debug Mode - Creating Test Profile
+                  </span>
+                </div>
+              )}
               <p className="text-bone-muted mb-2">Three questions.</p>
               <p className="text-bone-faint text-sm mb-12">
                 Discover which archetype shapes your creative taste.
@@ -140,7 +155,7 @@ export default function QuizPage() {
                 className="btn btn-primary"
                 onClick={handleStart}
               >
-                Begin
+                {isDebugMode ? 'Begin Debug Quiz' : 'Begin'}
               </button>
 
               <p className="text-bone-faint text-xs mt-8">~30 seconds</p>

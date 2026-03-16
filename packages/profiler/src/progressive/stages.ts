@@ -9,7 +9,7 @@ import type { TasteGenome } from '@subtaste/core';
 /**
  * Stage identifiers
  */
-export type StageId = 'training' | 'initial' | 'axes' | 'music' | 'deep';
+export type StageId = 'training' | 'initial' | 'axes' | 'drive' | 'music' | 'deep';
 
 /**
  * Stage trigger types
@@ -62,6 +62,16 @@ export const PROFILING_STAGES: ProfilingStage[] = [
     trigger: 'onboarding',
     questionCount: 4,
     estimatedSeconds: 45,
+    confidenceGain: 0.1,
+    prerequisites: ['initial']
+  },
+  {
+    id: 'drive',
+    name: 'Drive & Dynamics',
+    description: 'What motivates your creative taste and how it behaves socially.',
+    trigger: 'onboarding',
+    questionCount: 5,
+    estimatedSeconds: 60,
     confidenceGain: 0.1,
     prerequisites: ['initial']
   },

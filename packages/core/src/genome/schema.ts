@@ -12,9 +12,15 @@ import type {
   Sigil,
   Psychometrics,
   ContextProfile,
-  Domain
+  Domain,
+  MotivationProfile,
+  SocialProfile,
+  PerceptualSensitivity
 } from '../types';
 import { toSigil, toGlyph } from '../pantheon/definitions';
+import { getDefaultMotivation } from '../engine/motivation';
+import { getDefaultSocial } from '../engine/social';
+import { getDefaultSensitivity } from '../engine/sensitivity';
 
 /**
  * Generate a unique genome ID
@@ -90,7 +96,12 @@ export function createGenome(params: {
         textual: 0.5,
         spatial: 0.5
       }
-    }
+    },
+
+    // New profiling layers — defaults until populated by instruments/signals
+    motivation: getDefaultMotivation(),
+    socialDynamics: getDefaultSocial(),
+    perceptualSensitivity: getDefaultSensitivity()
   };
 }
 
@@ -113,7 +124,16 @@ export function toPublicGenome(genome: TasteGenome): TasteGenomePublic {
       revealed: genome.formal.revealed
     },
     confidence: genome.behaviour.confidence,
-    tasteTypicality: genome.crossModal.tasteTypicality
+    tasteTypicality: genome.crossModal.tasteTypicality,
+    keywords: genome.keywords,
+    gamification: genome.gamification,
+    behaviour: genome.behaviour,
+    motivation: genome.motivation,
+    socialDynamics: genome.socialDynamics,
+    // Only expose overall sensitivity score publicly
+    perceptualSensitivity: genome.perceptualSensitivity
+      ? { overall: genome.perceptualSensitivity.overall }
+      : undefined
   };
 }
 

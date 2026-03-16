@@ -9,7 +9,9 @@ import { createUser, getUser } from '@/lib/storage-prisma';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { userId: existingUserId, cardCount = 15 } = body;
+    // Random card count between 20-25 if not specified
+    const defaultCardCount = 20 + Math.floor(Math.random() * 6);
+    const { userId: existingUserId, cardCount = defaultCardCount } = body;
 
     // Create or use existing user
     let userId = existingUserId;
@@ -27,9 +29,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate training session
+    console.log('Creating training session with cardCount:', cardCount);
     const cards = createTrainingSession(cardCount);
+    console.log('Generated cards:', cards?.length || 0, 'cards');
 
-    if (cards.length === 0) {
+    if (!cards || cards.length === 0) {
+      console.error('createTrainingSession returned empty or null:', cards);
       return NextResponse.json(
         { error: 'Failed to generate training cards' },
         { status: 500 }

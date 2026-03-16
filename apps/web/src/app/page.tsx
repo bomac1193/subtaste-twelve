@@ -132,6 +132,13 @@ export default function HomePage() {
               <span className="text-bone-faint">·</span>
               <span>VOID</span>
             </div>
+            <button
+              type="button"
+              className="btn-ghost text-bone-faint text-xs mt-6"
+              onClick={() => router.push('/archetypes')}
+            >
+              View All Archetypes →
+            </button>
           </motion.div>
         </motion.div>
       </div>

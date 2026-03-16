@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProfilingQuiz } from '@/components/profiling/ProfilingQuiz';
 import { GlyphReveal } from '@/components/profiling/GlyphReveal';
+import { useDebug } from '@/contexts/DebugContext';
 import {
   PANTHEON,
   type Glyph,
@@ -41,13 +42,14 @@ function CalibrationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const stage = searchParams.get('stage') as 'music' | 'deep' || 'music';
+  const { isDebugMode, debugUserId } = useDebug();
 
   const [state, setState] = useState<CalibrationState>('intro');
   const [result, setResult] = useState<GenomeResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const userId = typeof window !== 'undefined'
-    ? localStorage.getItem('subtaste_user_id')
+    ? (isDebugMode ? debugUserId : localStorage.getItem('subtaste_user_id'))
     : null;
 
   useEffect(() => {
@@ -166,7 +168,7 @@ function CalibrationContent() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-void">
+    <div className={`min-h-screen bg-void ${isDebugMode ? 'pt-12' : ''}`}>
       <AnimatePresence mode="wait">
         {state === 'intro' && (
           <motion.div

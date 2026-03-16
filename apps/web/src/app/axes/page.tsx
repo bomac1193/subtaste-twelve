@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AxesSlider } from '@/components/profiling/AxesSlider';
+import { useDebug } from '@/contexts/DebugContext';
 import { AXES_QUESTIONS } from '@subtaste/profiler';
 
 type AxesState = 'intro' | 'calibration' | 'processing' | 'reveal';
@@ -33,6 +34,7 @@ interface HexagramResult {
 
 export default function AxesPage() {
   const router = useRouter();
+  const { isDebugMode } = useDebug();
   const [state, setState] = useState<AxesState>('intro');
   const [values, setValues] = useState<AxesValues>({
     orderChaos: 0.5,
@@ -59,7 +61,8 @@ export default function AxesPage() {
     setError(null);
 
     try {
-      const userId = localStorage.getItem('subtaste_user_id');
+      const userIdKey = isDebugMode ? 'subtaste_debug_user_id' : 'subtaste_user_id';
+      const userId = localStorage.getItem(userIdKey);
 
       if (!userId) {
         throw new Error('Please complete the initial quiz first');
@@ -84,7 +87,7 @@ export default function AxesPage() {
       setError(err instanceof Error ? err.message : 'An error occurred');
       setState('calibration');
     }
-  }, [values]);
+  }, [values, isDebugMode]);
 
   const handleContinue = useCallback(() => {
     router.push('/advanced');
@@ -93,7 +96,7 @@ export default function AxesPage() {
   const allQuestionsAnswered = true; // Always true since sliders have default values
 
   return (
-    <div className="min-h-screen bg-void">
+    <div className={`min-h-screen bg-void ${isDebugMode ? 'pt-12' : ''}`}>
       <AnimatePresence mode="wait">
         {state === 'intro' && (
           <motion.div
@@ -111,6 +114,13 @@ export default function AxesPage() {
               <h1 className="font-display text-3xl md:text-4xl text-bone mb-4 tracking-tight">
                 AXES CALIBRATION
               </h1>
+              {isDebugMode && (
+                <div className="mb-3">
+                  <span className="inline-block px-3 py-1 bg-state-warning/20 text-state-warning text-xs font-mono rounded-full border border-state-warning/40">
+                    🐛 Debug Mode
+                  </span>
+                </div>
+              )}
               <p className="text-bone-muted mb-2">Four personality dimensions.</p>
               <p className="text-bone-faint text-sm mb-12 max-w-md mx-auto">
                 Calibrate your creative personality across four axes.

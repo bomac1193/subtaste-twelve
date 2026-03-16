@@ -36,30 +36,23 @@ export async function getUser(userId: string): Promise<UserData | null> {
     if (!user) return null;
 
     // Convert TasteGenome model to TasteGenome type
-    const genome: TasteGenome | null = user.tasteGenome
-      ? {
-          primary: user.tasteGenome.primary as any,
-          secondary: user.tasteGenome.secondary as any,
-          confidence: user.tasteGenome.confidence,
-          distribution: user.tasteGenome.distribution as any,
-          axes: user.tasteGenome.orderChaos !== null ? {
-            orderChaos: user.tasteGenome.orderChaos,
-            mercyRuthlessness: user.tasteGenome.mercyRuthlessness!,
-            introvertExtrovert: user.tasteGenome.introvertExtrovert!,
-            faithDoubt: user.tasteGenome.faithDoubt!
-          } : undefined,
-          iching: user.tasteGenome.iching as any,
-          keywords: user.tasteGenome.keywords as any,
-          gamification: {
-            xp: user.tasteGenome.xp,
-            tier: user.tasteGenome.tier as any,
-            achievements: user.tasteGenome.achievements as any,
-            streak: user.tasteGenome.streak as any
-          },
-          psychometrics: user.tasteGenome.psychometrics as any,
-          subtasteContext: user.tasteGenome.subtasteContext as any
-        }
+    // The database stores a serialized JSON genome
+    let genome: TasteGenome | null = user.tasteGenome
+      ? (user.tasteGenome.distribution as any) // The full genome is stored in the distribution field as JSON
       : null;
+
+    // Ensure confidence is properly set - use database field as fallback
+    if (genome && user.tasteGenome) {
+      if (!genome.behaviour?.confidence && user.tasteGenome.confidence) {
+        genome = {
+          ...genome,
+          behaviour: {
+            ...genome.behaviour,
+            confidence: user.tasteGenome.confidence
+          }
+        };
+      }
+    }
 
     return {
       genome,
@@ -83,80 +76,57 @@ export async function setUser(
   try {
     const existing = await getUser(userId);
 
-    if (!existing) {
-      throw new Error(`User ${userId} not found`);
-    }
+    // If user doesn't exist, create default data structure
+    const defaultUserData: UserData = {
+      genome: null,
+      signalCount: 0,
+      stagesCompleted: [],
+      sigilRevealed: false
+    };
 
-    const merged = { ...existing, ...data };
+    const merged = { ...(existing || defaultUserData), ...data };
     const genome = merged.genome;
 
-    if (!genome) {
-      // If no genome yet, just update metadata
-      await prisma.tasteGenome.upsert({
-        where: { userId },
-        create: {
+    // Store the entire genome as JSON in the distribution field
+    // Extract basic fields for database columns
+    const genomeData = genome ? {
+      primary: genome.archetype?.primary?.designation || 'UNKNOWN',
+      secondary: genome.archetype?.secondary?.designation || null,
+      confidence: genome.behaviour?.confidence || genome.archetype?.primary?.confidence || 0,
+      distribution: genome as any, // Store full genome as JSON
+      signalCount: merged.signalCount,
+      stagesCompleted: merged.stagesCompleted,
+      sigilRevealed: genome.formal?.revealed || merged.sigilRevealed,
+      psychometrics: genome._engine?.psychometrics as any,
+      updatedAt: new Date()
+    } : {
+      primary: 'UNKNOWN',
+      secondary: null,
+      confidence: 0,
+      distribution: null,
+      signalCount: merged.signalCount,
+      stagesCompleted: merged.stagesCompleted,
+      sigilRevealed: merged.sigilRevealed,
+      psychometrics: null,
+      updatedAt: new Date()
+    };
+
+    // Use updateMany which works without replica set
+    const result = await prisma.tasteGenome.updateMany({
+      where: { userId },
+      data: genomeData
+    });
+
+    // If nothing was updated, create new
+    if (result.count === 0) {
+      await prisma.tasteGenome.create({
+        data: {
           userId,
-          primary: 'UNKNOWN',
-          signalCount: merged.signalCount,
-          stagesCompleted: merged.stagesCompleted,
-          sigilRevealed: merged.sigilRevealed
-        },
-        update: {
-          signalCount: merged.signalCount,
-          stagesCompleted: merged.stagesCompleted,
-          sigilRevealed: merged.sigilRevealed
+          ...genomeData,
+          createdAt: new Date()
         }
       });
-      return;
     }
-
-    // Update with full genome data
-    await prisma.tasteGenome.upsert({
-      where: { userId },
-      create: {
-        userId,
-        primary: genome.primary,
-        secondary: genome.secondary,
-        confidence: genome.confidence,
-        distribution: genome.distribution as any,
-        orderChaos: genome.axes?.orderChaos,
-        mercyRuthlessness: genome.axes?.mercyRuthlessness,
-        introvertExtrovert: genome.axes?.introvertExtrovert,
-        faithDoubt: genome.axes?.faithDoubt,
-        iching: genome.iching as any,
-        keywords: genome.keywords as any,
-        xp: genome.gamification?.xp || 0,
-        tier: genome.gamification?.tier || 'novice',
-        achievements: genome.gamification?.achievements as any,
-        streak: genome.gamification?.streak as any,
-        signalCount: merged.signalCount,
-        stagesCompleted: merged.stagesCompleted,
-        sigilRevealed: merged.sigilRevealed,
-        psychometrics: genome.psychometrics as any,
-        subtasteContext: genome.subtasteContext as any
-      },
-      update: {
-        primary: genome.primary,
-        secondary: genome.secondary,
-        confidence: genome.confidence,
-        distribution: genome.distribution as any,
-        orderChaos: genome.axes?.orderChaos,
-        mercyRuthlessness: genome.axes?.mercyRuthlessness,
-        introvertExtrovert: genome.axes?.introvertExtrovert,
-        faithDoubt: genome.axes?.faithDoubt,
-        iching: genome.iching as any,
-        keywords: genome.keywords as any,
-        xp: genome.gamification?.xp || 0,
-        tier: genome.gamification?.tier || 'novice',
-        achievements: genome.gamification?.achievements as any,
-        streak: genome.gamification?.streak as any,
-        signalCount: merged.signalCount,
-        stagesCompleted: merged.stagesCompleted,
-        sigilRevealed: merged.sigilRevealed,
-        psychometrics: genome.psychometrics as any,
-        subtasteContext: genome.subtasteContext as any
-      }
-    });
   } catch (error) {
     console.error('Failed to set user:', error);
     throw error;
@@ -172,18 +142,23 @@ export async function createUser(email?: string, name?: string): Promise<string>
     // If authenticated, use current user
     const currentUserId = await getCurrentUserId();
     if (currentUserId) {
-      // Ensure taste genome exists
-      await prisma.tasteGenome.upsert({
-        where: { userId: currentUserId },
-        create: {
-          userId: currentUserId,
-          primary: 'UNKNOWN',
-          signalCount: 0,
-          stagesCompleted: [],
-          sigilRevealed: false
-        },
-        update: {}
+      // Check if taste genome exists
+      const existingGenome = await prisma.tasteGenome.findUnique({
+        where: { userId: currentUserId }
       });
+
+      // Create if doesn't exist
+      if (!existingGenome) {
+        await prisma.tasteGenome.create({
+          data: {
+            userId: currentUserId,
+            primary: 'UNKNOWN',
+            signalCount: 0,
+            stagesCompleted: [],
+            sigilRevealed: false
+          }
+        });
+      }
       return currentUserId;
     }
 
@@ -192,15 +167,18 @@ export async function createUser(email?: string, name?: string): Promise<string>
     const user = await prisma.user.create({
       data: {
         email: email || `temp_${Date.now()}@subtaste.local`,
-        name: name || 'Guest',
-        tasteGenome: {
-          create: {
-            primary: 'UNKNOWN',
-            signalCount: 0,
-            stagesCompleted: [],
-            sigilRevealed: false
-          }
-        }
+        name: name || 'Guest'
+      }
+    });
+
+    // Create tasteGenome separately to avoid transaction requirement
+    await prisma.tasteGenome.create({
+      data: {
+        userId: user.id,
+        primary: 'UNKNOWN',
+        signalCount: 0,
+        stagesCompleted: [],
+        sigilRevealed: false
       }
     });
 
@@ -219,15 +197,21 @@ export async function incrementSignals(
   count: number = 1
 ): Promise<number> {
   try {
-    const result = await prisma.tasteGenome.update({
+    // Get current count
+    const current = await prisma.tasteGenome.findUnique({
       where: { userId },
-      data: {
-        signalCount: {
-          increment: count
-        }
-      }
+      select: { signalCount: true }
     });
-    return result.signalCount;
+
+    const newCount = (current?.signalCount || 0) + count;
+
+    // Update with new count
+    await prisma.tasteGenome.updateMany({
+      where: { userId },
+      data: { signalCount: newCount }
+    });
+
+    return newCount;
   } catch (error) {
     console.error('Failed to increment signals:', error);
     return 0;
@@ -243,12 +227,11 @@ export async function completeStage(userId: string, stage: string): Promise<void
     if (!user) return;
 
     if (!user.stagesCompleted.includes(stage)) {
-      await prisma.tasteGenome.update({
+      const newStages = [...user.stagesCompleted, stage];
+      await prisma.tasteGenome.updateMany({
         where: { userId },
         data: {
-          stagesCompleted: {
-            push: stage
-          }
+          stagesCompleted: newStages
         }
       });
     }
@@ -262,7 +245,7 @@ export async function completeStage(userId: string, stage: string): Promise<void
  */
 export async function revealSigil(userId: string): Promise<boolean> {
   try {
-    await prisma.tasteGenome.update({
+    await prisma.tasteGenome.updateMany({
       where: { userId },
       data: {
         sigilRevealed: true
@@ -271,6 +254,33 @@ export async function revealSigil(userId: string): Promise<boolean> {
     return true;
   } catch (error) {
     console.error('Failed to reveal sigil:', error);
+    return false;
+  }
+}
+
+/**
+ * Reset user profile - clears genome, signals, and stages
+ * This creates a fresh start while preserving the user account
+ */
+export async function resetUserProfile(userId: string): Promise<boolean> {
+  try {
+    await prisma.tasteGenome.updateMany({
+      where: { userId },
+      data: {
+        primary: 'UNKNOWN',
+        secondary: null,
+        confidence: 0,
+        distribution: null,
+        signalCount: 0,
+        stagesCompleted: [],
+        sigilRevealed: false,
+        psychometrics: null,
+        updatedAt: new Date()
+      }
+    });
+    return true;
+  } catch (error) {
+    console.error('Failed to reset user profile:', error);
     return false;
   }
 }

@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrainingCard } from '@/components/profiling/TrainingCard';
+import { useDebug } from '@/contexts/DebugContext';
 
 type TrainingState = 'intro' | 'training' | 'processing' | 'complete';
 
@@ -31,6 +32,7 @@ interface TrainingSubmission {
 
 export default function TrainingPage() {
   const router = useRouter();
+  const { isDebugMode, debugUserId, setDebugUserId, exitDebug } = useDebug();
   const [state, setState] = useState<TrainingState>('intro');
   const [session, setSession] = useState<TrainingSession | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -39,23 +41,21 @@ export default function TrainingPage() {
   const [totalXP, setTotalXP] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
-  const MINIMUM_CARDS = 15;
-
   const handleStart = useCallback(async () => {
     setState('processing');
     setError(null);
 
     try {
-      // Get or create userId
-      let userId = localStorage.getItem('subtaste_user_id');
+      // Get or create userId - use separate key for debug mode
+      const userIdKey = isDebugMode ? 'subtaste_debug_user_id' : 'subtaste_user_id';
+      let userId = localStorage.getItem(userIdKey);
 
-      // Start training session
+      // Start training session (cardCount defaults to 20-25 on server)
       const response = await fetch('/api/v2/training/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId,
-          cardCount: MINIMUM_CARDS
+          userId
         }),
       });
 
@@ -67,7 +67,11 @@ export default function TrainingPage() {
 
       setSession(data);
       if (data.userId) {
-        localStorage.setItem('subtaste_user_id', data.userId);
+        localStorage.setItem(userIdKey, data.userId);
+        // Store debug userId in context
+        if (isDebugMode) {
+          setDebugUserId(data.userId);
+        }
       }
       setState('training');
     } catch (err) {
@@ -75,7 +79,7 @@ export default function TrainingPage() {
       setError(err instanceof Error ? err.message : 'An error occurred');
       setState('intro');
     }
-  }, []);
+  }, [isDebugMode, setDebugUserId]);
 
   const handleCardSubmit = useCallback(async (bestId: string, worstId: string) => {
     if (!session) return;
@@ -87,8 +91,9 @@ export default function TrainingPage() {
     setError(null);
 
     try {
-      // Submit the training response
-      const userId = localStorage.getItem('subtaste_user_id');
+      // Submit the training response - use correct key based on debug mode
+      const userIdKey = isDebugMode ? 'subtaste_debug_user_id' : 'subtaste_user_id';
+      const userId = localStorage.getItem(userIdKey);
       const submission: TrainingSubmission = {
         cardId: currentCard.id,
         bestId,
@@ -131,9 +136,10 @@ export default function TrainingPage() {
       setError(err instanceof Error ? err.message : 'An error occurred');
       setState('training');
     }
-  }, [session, currentIndex, submissions, completedTopics, totalXP]);
+  }, [session, currentIndex, submissions, completedTopics, totalXP, isDebugMode]);
 
-  const handleContinue = useCallback(() => {
+  const handleContinue = useCallback(async () => {
+    // Just go to profile - debug state is now global
     router.push('/profile');
   }, [router]);
 
@@ -142,7 +148,7 @@ export default function TrainingPage() {
   const isLastCard = session && currentIndex === session.cards.length - 1;
 
   return (
-    <div className="min-h-screen bg-void">
+    <div className={`min-h-screen bg-void ${isDebugMode ? 'pt-12' : ''}`}>
       <AnimatePresence mode="wait">
         {state === 'intro' && (
           <motion.div
@@ -160,8 +166,15 @@ export default function TrainingPage() {
               <h1 className="font-display text-3xl md:text-4xl text-bone mb-4 tracking-tight">
                 TASTE TRAINING
               </h1>
+              {isDebugMode && (
+                <div className="mb-3">
+                  <span className="inline-block px-3 py-1 bg-state-warning/20 text-state-warning text-xs font-mono rounded-full border border-state-warning/40">
+                    🐛 Testing Mode - Mock Profile
+                  </span>
+                </div>
+              )}
               <p className="text-bone-muted mb-2">
-                {MINIMUM_CARDS} creative preference cards.
+                20-25 creative preference cards.
               </p>
               <p className="text-bone-faint text-sm mb-12 max-w-md mx-auto">
                 For each card, select your most and least preferred approaches.
@@ -173,7 +186,7 @@ export default function TrainingPage() {
                 className="btn btn-primary"
                 onClick={handleStart}
               >
-                Begin Training
+                {isDebugMode ? 'Start Debug Training' : 'Begin Training'}
               </button>
 
               <p className="text-bone-faint text-xs mt-8">~2 minutes</p>
@@ -277,6 +290,14 @@ export default function TrainingPage() {
                 Training Complete
               </h2>
 
+              {isDebugMode && (
+                <div className="mb-4">
+                  <span className="inline-block px-3 py-1 bg-state-warning/20 text-state-warning text-xs font-mono rounded-full border border-state-warning/40">
+                    🐛 Debug Session Complete
+                  </span>
+                </div>
+              )}
+
               <div className="space-y-2 text-bone-muted">
                 <p>
                   Completed {submissions.length} cards
@@ -287,16 +308,46 @@ export default function TrainingPage() {
                 <p className="text-sm text-bone-faint">
                   {completedTopics.size} unique topics explored
                 </p>
+                {isDebugMode && (
+                  <div className="mt-4 pt-4 border-t border-border-subtle">
+                    <p className="text-xs text-bone-faint mb-2">Debug Info:</p>
+                    <p className="text-xs font-mono text-bone-muted">
+                      Signals Generated: {submissions.length * 2}
+                    </p>
+                    <p className="text-xs font-mono text-bone-muted">
+                      Test User ID: {localStorage.getItem('subtaste_debug_user_id')?.substring(0, 12)}...
+                    </p>
+                  </div>
+                )}
               </div>
 
-              <div className="pt-8">
+              <div className="pt-8 space-y-3">
                 <button
                   type="button"
                   className="btn btn-primary"
                   onClick={handleContinue}
                 >
-                  View Profile
+                  {isDebugMode ? 'View Debug Profile' : 'View Profile'}
                 </button>
+                {isDebugMode && (
+                  <div>
+                    <button
+                      type="button"
+                      className="btn-ghost text-bone-faint text-sm"
+                      onClick={() => {
+                        exitDebug();
+                        setState('intro');
+                        setSession(null);
+                        setCurrentIndex(0);
+                        setSubmissions([]);
+                        setCompletedTopics(new Set());
+                        setTotalXP(0);
+                      }}
+                    >
+                      Reset & Exit Debug Mode
+                    </button>
+                  </div>
+                )}
               </div>
             </motion.div>
           </motion.div>

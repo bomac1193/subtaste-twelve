@@ -49,6 +49,10 @@ export async function POST(request: NextRequest) {
     // Classify
     const result = classify({ signals });
 
+    // Debug: Log confidence value
+    console.log('[Quiz] Classification confidence:', result.classification.primary.confidence);
+    console.log('[Quiz] Signals count:', signals.length);
+
     // Create genome
     const genome = createGenome({
       userId,

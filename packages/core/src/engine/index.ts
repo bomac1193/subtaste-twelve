@@ -34,3 +34,28 @@ export {
 } from './weights';
 
 export type { ScoringConfig } from './weights';
+
+// Motivation engine
+export {
+  getDefaultMotivation,
+  extractMotivationDeltas,
+  applyMotivationDeltas,
+  getPrimaryMotivation
+} from './motivation';
+
+// Social dynamics engine
+export {
+  getDefaultSocial,
+  extractSocialDeltas,
+  applySocialDeltas,
+  getDominantRole
+} from './social';
+
+// Perceptual sensitivity engine
+export {
+  getDefaultSensitivity,
+  updateSensitivityFromTraining,
+  isSensitivityReliable
+} from './sensitivity';
+
+export type { TrainingSubmission } from './sensitivity';

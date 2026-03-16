@@ -37,6 +37,10 @@ export type {
   KeywordScores,
   Gamification,
   SubtasteContext,
+  MotivationProfile,
+  SocialRole,
+  SocialProfile,
+  PerceptualSensitivity,
 
   // Signal types
   SignalType,
@@ -99,14 +103,29 @@ export {
   DEFAULT_SCORING_CONFIG,
   CONTEXT_WEIGHTS,
   mergeConfig,
-  getContextConfig
+  getContextConfig,
+  // Motivation engine
+  getDefaultMotivation,
+  extractMotivationDeltas,
+  applyMotivationDeltas,
+  getPrimaryMotivation,
+  // Social dynamics engine
+  getDefaultSocial,
+  extractSocialDeltas,
+  applySocialDeltas,
+  getDominantRole,
+  // Perceptual sensitivity engine
+  getDefaultSensitivity,
+  updateSensitivityFromTraining,
+  isSensitivityReliable
 } from './engine';
 
 export type {
   ClassificationInput,
   ClassificationResult,
   TraitDelta,
-  ScoringConfig
+  ScoringConfig,
+  TrainingSubmission
 } from './engine';
 
 // ============================================================================

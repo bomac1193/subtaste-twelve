@@ -33,3 +33,15 @@ export type {
   RankingResponse,
   QuestionResponse
 } from './mapping';
+
+// Motivation & social dynamics questions
+export {
+  MOTIVATION_QUESTIONS,
+  SOCIAL_QUESTIONS,
+  ALL_DRIVE_QUESTIONS
+} from './motivation-bank';
+
+export type {
+  MotivationQuestion,
+  MotivationWeights
+} from './motivation-bank';

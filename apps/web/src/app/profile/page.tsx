@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { GlyphReveal } from '@/components/profiling/GlyphReveal';
+import { useDebug } from '@/contexts/DebugContext';
 import {
   PANTHEON,
   type Glyph,
@@ -23,8 +24,10 @@ interface GenomeData {
   confidence: number;
   secondary?: {
     glyph: Glyph;
+    designation: Designation;
     confidence: number;
   };
+  distribution?: Record<Designation, number>;
 }
 
 interface ProfilingProgress {
@@ -34,17 +37,25 @@ interface ProfilingProgress {
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { isDebugMode, debugUserId } = useDebug();
   const [genome, setGenome] = useState<GenomeData | null>(null);
   const [progress, setProgress] = useState<ProfilingProgress | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   const userId = typeof window !== 'undefined'
-    ? localStorage.getItem('subtaste_user_id')
+    ? (isDebugMode ? debugUserId : localStorage.getItem('subtaste_user_id'))
     : null;
 
   useEffect(() => {
     async function fetchData() {
+      // Debug logging
+      console.log('[Profile] Debug mode:', isDebugMode);
+      console.log('[Profile] Debug user ID:', debugUserId);
+      console.log('[Profile] Normal user ID:', localStorage.getItem('subtaste_user_id'));
+      console.log('[Profile] Using user ID:', userId);
+
       if (!userId) {
         router.push('/quiz');
         return;
@@ -77,8 +88,10 @@ export default function ProfilePage() {
           confidence: genomeData.confidence,
           secondary: genomeData.archetype.secondary ? {
             glyph: genomeData.archetype.secondary.glyph,
+            designation: genomeData.archetype.secondary.designation,
             confidence: genomeData.archetype.secondary.confidence,
           } : undefined,
+          distribution: genomeData.archetype.distribution,
         });
 
         setProgress(progressData);
@@ -140,7 +153,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-void">
+    <div className={`min-h-screen bg-void ${isDebugMode ? 'pt-12' : ''}`}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -157,6 +170,136 @@ export default function ProfilePage() {
           secondary={genome.secondary}
           onSigilReveal={handleSigilReveal}
         />
+
+        {/* Archetype Breakdown */}
+        {genome.distribution && (
+          <motion.div
+            className="container-sm px-4 pb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2 }}
+          >
+            <div className="archetype-card">
+              <button
+                type="button"
+                onClick={() => setShowBreakdown(!showBreakdown)}
+                className="w-full flex items-center justify-between text-left group"
+              >
+                <div>
+                  <h3 className="text-sm font-display tracking-wider text-bone mb-1">
+                    FORMAL CLASSIFICATION
+                  </h3>
+                  <p className="text-xs text-bone-faint">
+                    View detailed archetype breakdown
+                  </p>
+                </div>
+                <svg
+                  className={`w-5 h-5 text-bone-faint transition-transform ${showBreakdown ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {showBreakdown && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-6 pt-6 border-t border-border-subtle space-y-6"
+                >
+                  {/* Primary & Secondary Summary */}
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-wider text-bone-faint mb-2">Primary Archetype</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-bone font-mono">{genome.glyph} {genome.designation}</span>
+                        <span className="text-bone-muted text-sm">
+                          {(genome.confidence * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <p className="text-xs text-bone-faint mt-1 italic">{genome.creativeMode}</p>
+                    </div>
+
+                    {genome.secondary && (
+                      <div>
+                        <p className="text-xs uppercase tracking-wider text-bone-faint mb-2">Secondary Archetype</p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-bone-muted font-mono">{genome.secondary.glyph} {genome.secondary.designation}</span>
+                          <span className="text-bone-muted text-sm">
+                            {(genome.secondary.confidence * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                        <p className="text-xs text-bone-faint mt-1 italic">
+                          {PANTHEON[genome.secondary.designation].creativeMode}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Full Distribution */}
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-bone-faint mb-3">
+                      Complete Archetype Distribution
+                    </p>
+                    <div className="space-y-2">
+                      {Object.entries(genome.distribution)
+                        .sort(([, a], [, b]) => b - a)
+                        .map(([designation, weight]) => {
+                          const archetype = PANTHEON[designation as Designation];
+                          const percentage = (weight * 100).toFixed(1);
+                          const isPrimary = designation === genome.designation;
+                          const isSecondary = designation === genome.secondary?.designation;
+
+                          return (
+                            <div key={designation} className="space-y-1">
+                              <div className="flex items-center justify-between">
+                                <span className={`text-xs font-mono ${
+                                  isPrimary ? 'text-bone' :
+                                  isSecondary ? 'text-bone-muted' :
+                                  'text-bone-faint'
+                                }`}>
+                                  {archetype.glyph} {designation}
+                                  {isPrimary && ' (Primary)'}
+                                  {isSecondary && ' (Secondary)'}
+                                </span>
+                                <span className="text-xs text-bone-faint">{percentage}%</span>
+                              </div>
+                              <div className="h-1 bg-void-lighter rounded-full overflow-hidden">
+                                <div
+                                  className={`h-full transition-all ${
+                                    isPrimary ? 'bg-bone' :
+                                    isSecondary ? 'bg-bone-muted' :
+                                    'bg-bone-faint'
+                                  }`}
+                                  style={{ width: `${percentage}%` }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div>
+
+                  {/* Signal Count Info */}
+                  {progress && (
+                    <div className="pt-4 border-t border-border-subtle">
+                      <p className="text-xs text-bone-faint text-center">
+                        Based on {progress.signalCount} signals • {progress.stagesCompleted.length}/3 stages completed
+                      </p>
+                      <p className="text-xs text-bone-faint text-center mt-1">
+                        More signals = higher confidence and better understanding
+                      </p>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+        )}
 
         {/* Calibration prompt */}
         {calibrationAvailable && (

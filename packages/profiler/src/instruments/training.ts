@@ -125,6 +125,140 @@ export const TRAINING_PROMPTS: TrainingPrompt[] = [
   { id: 'bw-lat-pattern-refine', topic: 'latent-pattern', prompt: 'Refining a pattern feels like mastery.', archetypeHint: 'S-0' },
   { id: 'bw-lat-alone', topic: 'latent-process', prompt: 'Your best ideas come when you\u2019re completely alone.', archetypeHint: 'C-4' },
   { id: 'bw-lat-friction', topic: 'latent-process', prompt: 'Your best ideas come from friction with other people.', archetypeHint: 'H-6' },
+
+  // Portfolio & Showcase
+  { id: 'port-curated', topic: 'portfolio', prompt: 'Portfolio as gallery: only your 7 best pieces, carefully sequenced.', archetypeHint: 'S-0' },
+  { id: 'port-comprehensive', topic: 'portfolio', prompt: 'Portfolio as archive: show range, process, evolution over time.', archetypeHint: 'P-7' },
+  { id: 'port-process', topic: 'portfolio', prompt: 'Lead with process: sketches, iterations, the making-of story.', archetypeHint: 'T-1' },
+  { id: 'port-impact', topic: 'portfolio', prompt: 'Lead with impact: before/after, metrics, what changed.', archetypeHint: 'F-9' },
+
+  // Client & Commercial Work
+  { id: 'client-educate', topic: 'client-work', prompt: 'Client wants generic work: educate them on why that fails.', archetypeHint: 'R-10' },
+  { id: 'client-deliver', topic: 'client-work', prompt: 'Client wants generic work: deliver it professionally and move on.', archetypeHint: 'F-9' },
+  { id: 'client-vision', topic: 'client-work', prompt: 'Brief is vague: interpret freely and show what\'s possible.', archetypeHint: 'V-2' },
+  { id: 'client-clarify', topic: 'client-work', prompt: 'Brief is vague: ask questions until the ask crystallizes.', archetypeHint: 'T-1' },
+  { id: 'client-personal', topic: 'client-work', prompt: 'Commercial work should feel indistinguishable from personal work.', archetypeHint: 'S-0' },
+  { id: 'client-separate', topic: 'client-work', prompt: 'Commercial work and personal work serve different masters.', archetypeHint: 'P-7' },
+
+  // Creative Inspiration
+  { id: 'insp-obscure', topic: 'inspiration', prompt: 'Pull references from outside your field entirely.', archetypeHint: 'N-5' },
+  { id: 'insp-canon', topic: 'inspiration', prompt: 'Study the canon: masters of your craft, deeply.', archetypeHint: 'P-7' },
+  { id: 'insp-constraint', topic: 'inspiration', prompt: 'Constraints breed creativity: set arbitrary limits and solve within them.', archetypeHint: 'T-1' },
+  { id: 'insp-abundance', topic: 'inspiration', prompt: 'Abundance breeds creativity: gather everything, collage freely.', archetypeHint: 'D-8' },
+  { id: 'insp-consume', topic: 'inspiration', prompt: 'Consume voraciously across disciplines. Synthesis is creation.', archetypeHint: 'N-5' },
+  { id: 'insp-starve', topic: 'inspiration', prompt: 'Starve inputs deliberately. Force original output.', archetypeHint: 'C-4' },
+
+  // Tool & Platform Choices
+  { id: 'tool-cutting', topic: 'tools', prompt: 'Use the newest tools: embrace what\'s just become possible.', archetypeHint: 'V-2' },
+  { id: 'tool-proven', topic: 'tools', prompt: 'Use proven tools: stability and craft over novelty.', archetypeHint: 'L-3' },
+  { id: 'tool-custom', topic: 'tools', prompt: 'Build your own tools when off-the-shelf won\'t do.', archetypeHint: 'T-1' },
+  { id: 'tool-adapt', topic: 'tools', prompt: 'Adapt to whatever tool is available. Constraints spark solutions.', archetypeHint: 'F-9' },
+  { id: 'plat-multi', topic: 'platform', prompt: 'Be everywhere: adapt your work to each platform\'s strengths.', archetypeHint: 'H-6' },
+  { id: 'plat-home', topic: 'platform', prompt: 'Own your platform: build once, distribute from home base.', archetypeHint: 'P-7' },
+
+  // Collaboration Dynamics
+  { id: 'collab-solo', topic: 'collaboration', prompt: 'Work alone, present finished. Collaboration dilutes vision.', archetypeHint: 'S-0' },
+  { id: 'collab-open', topic: 'collaboration', prompt: 'Work in public, iterate together. Vision emerges from dialogue.', archetypeHint: 'H-6' },
+  { id: 'collab-lead', topic: 'collaboration', prompt: 'Lead the vision, delegate execution.', archetypeHint: 'S-0' },
+  { id: 'collab-peer', topic: 'collaboration', prompt: 'Peer collaboration: everyone contributes to vision and execution.', archetypeHint: 'N-5' },
+  { id: 'collab-credit', topic: 'collaboration', prompt: 'Credit every contributor publicly and prominently.', archetypeHint: 'H-6' },
+  { id: 'collab-anon', topic: 'collaboration', prompt: 'Credit the collective: individual names are noise.', archetypeHint: 'Ø' },
+
+  // Personal Brand & Identity
+  { id: 'brand-consistent', topic: 'brand', prompt: 'Consistent aesthetic across everything: recognizable at a glance.', archetypeHint: 'S-0' },
+  { id: 'brand-evolving', topic: 'brand', prompt: 'Evolving aesthetic: each project looks different, linked by taste.', archetypeHint: 'D-8' },
+  { id: 'brand-transparent', topic: 'brand', prompt: 'Show everything: process, failures, uncertainty.', archetypeHint: 'L-3' },
+  { id: 'brand-mystery', topic: 'brand', prompt: 'Maintain mystery: only show the work, never the making.', archetypeHint: 'P-7' },
+  { id: 'brand-persona', topic: 'brand', prompt: 'Create a persona: the work and the person are separate.', archetypeHint: 'S-0' },
+  { id: 'brand-authentic', topic: 'brand', prompt: 'No persona: the work is an extension of who you actually are.', archetypeHint: 'L-3' },
+
+  // Creative Process Details
+  { id: 'proc-morning', topic: 'process-time', prompt: 'Create in the morning: fresh mind, before the world intrudes.', archetypeHint: 'C-4' },
+  { id: 'proc-night', topic: 'process-time', prompt: 'Create at night: when defenses are down, filters dissolve.', archetypeHint: 'D-8' },
+  { id: 'proc-ritual', topic: 'process-ritual', prompt: 'Ritual before work: same place, same time, same sequence.', archetypeHint: 'T-1' },
+  { id: 'proc-chaos', topic: 'process-ritual', prompt: 'No ritual: create when the impulse strikes, wherever you are.', archetypeHint: 'D-8' },
+  { id: 'proc-deadline', topic: 'process-deadline', prompt: 'Deadlines unlock flow: pressure reveals what matters.', archetypeHint: 'F-9' },
+  { id: 'proc-spacious', topic: 'process-deadline', prompt: 'Spacious timelines: ideas need room to breathe and evolve.', archetypeHint: 'L-3' },
+
+  // Curation & Taste Expression
+  { id: 'cur-edit', topic: 'curation', prompt: 'Curation is editing: 100 options to 5 perfect selections.', archetypeHint: 'C-4' },
+  { id: 'cur-context', topic: 'curation', prompt: 'Curation is contexting: show relationships between 30 interesting things.', archetypeHint: 'N-5' },
+  { id: 'cur-gateway', topic: 'curation', prompt: 'Curate as gateway: introduce people to what they don\'t know yet.', archetypeHint: 'V-2' },
+  { id: 'cur-mirror', topic: 'curation', prompt: 'Curate as mirror: reflect what\'s already resonating.', archetypeHint: 'Ø' },
+  { id: 'cur-explain', topic: 'curation', prompt: 'Every selection needs explanation: why this, why now.', archetypeHint: 'T-1' },
+  { id: 'cur-silent', topic: 'curation', prompt: 'Never explain: the selections speak for themselves.', archetypeHint: 'P-7' },
+
+  // Professional Development
+  { id: 'dev-depth', topic: 'development', prompt: 'Master one thing completely: depth creates authority.', archetypeHint: 'S-0' },
+  { id: 'dev-breadth', topic: 'development', prompt: 'Learn many things shallowly: breadth creates connections.', archetypeHint: 'N-5' },
+  { id: 'dev-formal', topic: 'development', prompt: 'Formal education: structured curriculum, recognized credentials.', archetypeHint: 'T-1' },
+  { id: 'dev-autodidact', topic: 'development', prompt: 'Self-taught: follow curiosity, build your own curriculum.', archetypeHint: 'P-7' },
+  { id: 'dev-mentorship', topic: 'development', prompt: 'Learn from someone 10 years ahead: shorten the path.', archetypeHint: 'L-3' },
+  { id: 'dev-pioneering', topic: 'development', prompt: 'Pioneer new territory: no mentor because no path exists yet.', archetypeHint: 'V-2' },
+
+  // Creative Community Engagement
+  { id: 'comm-build', topic: 'community', prompt: 'Build community: create spaces for others to gather and grow.', archetypeHint: 'H-6' },
+  { id: 'comm-observe', topic: 'community', prompt: 'Observe community: participate quietly, learn from the periphery.', archetypeHint: 'Ø' },
+  { id: 'comm-teach', topic: 'community', prompt: 'Teach what you learn: giving back is part of the practice.', archetypeHint: 'L-3' },
+  { id: 'comm-gatekeep', topic: 'community', prompt: 'Protect the signal: not everything should be shared publicly.', archetypeHint: 'P-7' },
+  { id: 'comm-provocateur', topic: 'community', prompt: 'Play provocateur: challenge consensus, spark necessary debate.', archetypeHint: 'R-10' },
+  { id: 'comm-unifier', topic: 'community', prompt: 'Play unifier: find common ground, build bridges between factions.', archetypeHint: 'N-5' },
+
+  // Project Approach
+  { id: 'proj-prototype', topic: 'project-approach', prompt: 'Ship a rough prototype: test the idea before investing deeply.', archetypeHint: 'F-9' },
+  { id: 'proj-complete', topic: 'project-approach', prompt: 'Complete it fully before showing anyone: no half-formed ideas.', archetypeHint: 'S-0' },
+  { id: 'proj-iterative', topic: 'project-approach', prompt: 'Build in public: version 0.1, 0.2, 0.3 as you learn.', archetypeHint: 'H-6' },
+  { id: 'proj-reveal', topic: 'project-approach', prompt: 'Work in private: reveal only when it\'s fully realized.', archetypeHint: 'C-4' },
+  { id: 'proj-breadcrumbs', topic: 'project-approach', prompt: 'Drop cryptic hints: build anticipation before the reveal.', archetypeHint: 'V-2' },
+  { id: 'proj-surprise', topic: 'project-approach', prompt: 'Total surprise drop: no warning, no buildup, just appear.', archetypeHint: 'R-10' },
+
+  // Feedback & Criticism
+  { id: 'feed-everyone', topic: 'feedback', prompt: 'Get feedback from everyone: diverse perspectives improve everything.', archetypeHint: 'N-5' },
+  { id: 'feed-selective', topic: 'feedback', prompt: 'Get feedback from 2-3 trusted people whose taste you respect.', archetypeHint: 'S-0' },
+  { id: 'feed-integrate', topic: 'feedback', prompt: 'Integrate all feedback: every critique contains a signal.', archetypeHint: 'L-3' },
+  { id: 'feed-filter', topic: 'feedback', prompt: 'Filter feedback through vision: use what serves the work, ignore the rest.', archetypeHint: 'S-0' },
+  { id: 'feed-public', topic: 'feedback', prompt: 'Seek public critique: transparency and openness improve work.', archetypeHint: 'H-6' },
+  { id: 'feed-private', topic: 'feedback', prompt: 'Keep critique private: public feedback creates performance anxiety.', archetypeHint: 'P-7' },
+
+  // Trend & Timing
+  { id: 'trend-early', topic: 'trend-timing', prompt: 'Spot trends early: be first to explore new territory.', archetypeHint: 'V-2' },
+  { id: 'trend-timeless', topic: 'trend-timing', prompt: 'Ignore trends entirely: build timeless work that outlasts cycles.', archetypeHint: 'P-7' },
+  { id: 'trend-counter', topic: 'trend-timing', prompt: 'Go counter to trends: zig when everyone else zags.', archetypeHint: 'R-10' },
+  { id: 'trend-peak', topic: 'trend-timing', prompt: 'Enter trends at peak: ride maximum energy and attention.', archetypeHint: 'H-6' },
+  { id: 'trend-synthesize', topic: 'trend-timing', prompt: 'Synthesize multiple trends: create new combinations.', archetypeHint: 'N-5' },
+  { id: 'trend-establish', topic: 'trend-timing', prompt: 'Establish the trend: be so early you define the category.', archetypeHint: 'V-2' },
+
+  // Documentation & Memory
+  { id: 'doc-everything', topic: 'documentation', prompt: 'Document everything: future you will thank present you.', archetypeHint: 'P-7' },
+  { id: 'doc-nothing', topic: 'documentation', prompt: 'Document nothing: if it mattered, you\'ll remember.', archetypeHint: 'F-9' },
+  { id: 'doc-process', topic: 'documentation', prompt: 'Document process over output: how you got there matters more.', archetypeHint: 'T-1' },
+  { id: 'doc-outcomes', topic: 'documentation', prompt: 'Document outcomes only: results speak louder than process.', archetypeHint: 'F-9' },
+  { id: 'doc-public', topic: 'documentation', prompt: 'Public documentation: make your notes a learning resource.', archetypeHint: 'H-6' },
+  { id: 'doc-private', topic: 'documentation', prompt: 'Private archive: some knowledge is for you alone.', archetypeHint: 'P-7' },
+
+  // Success & Recognition
+  { id: 'succ-external', topic: 'success', prompt: 'Success is external: awards, followers, industry recognition.', archetypeHint: 'H-6' },
+  { id: 'succ-internal', topic: 'success', prompt: 'Success is internal: did you make what you wanted to make.', archetypeHint: 'S-0' },
+  { id: 'succ-influence', topic: 'success', prompt: 'Success is influence: see your ideas in others\' work.', archetypeHint: 'V-2' },
+  { id: 'succ-craft', topic: 'success', prompt: 'Success is craft: each piece better than the last.', archetypeHint: 'L-3' },
+  { id: 'succ-disruption', topic: 'success', prompt: 'Success is disruption: force the field to reconsider itself.', archetypeHint: 'R-10' },
+  { id: 'succ-sustainability', topic: 'success', prompt: 'Success is sustainability: still making work in 10 years.', archetypeHint: 'L-3' },
+
+  // Material & Medium
+  { id: 'med-digital', topic: 'medium', prompt: 'Digital-first: born on screens, for screens.', archetypeHint: 'V-2' },
+  { id: 'med-physical', topic: 'medium', prompt: 'Physical-first: tangible objects you can hold.', archetypeHint: 'P-7' },
+  { id: 'med-hybrid', topic: 'medium', prompt: 'Hybrid experiences: blur the line between physical and digital.', archetypeHint: 'N-5' },
+  { id: 'med-agnostic', topic: 'medium', prompt: 'Medium agnostic: the idea determines the format.', archetypeHint: 'T-1' },
+  { id: 'med-specific', topic: 'medium', prompt: 'Medium specific: master one format deeply.', archetypeHint: 'S-0' },
+  { id: 'med-experimental', topic: 'medium', prompt: 'Experimental formats: push medium boundaries constantly.', archetypeHint: 'R-10' },
+
+  // Revision & Refinement
+  { id: 'rev-minimal', topic: 'revision', prompt: 'Revise minimally: first instinct is usually right.', archetypeHint: 'D-8' },
+  { id: 'rev-exhaustive', topic: 'revision', prompt: 'Revise exhaustively: first draft is just raw material.', archetypeHint: 'S-0' },
+  { id: 'rev-break', topic: 'revision', prompt: 'Take breaks: step away, return with fresh eyes.', archetypeHint: 'L-3' },
+  { id: 'rev-immersive', topic: 'revision', prompt: 'Stay immersed: continuous iteration maintains flow.', archetypeHint: 'F-9' },
+  { id: 'rev-others', topic: 'revision', prompt: 'Revise based on others\' reading: dialogue shapes final form.', archetypeHint: 'H-6' },
+  { id: 'rev-vision', topic: 'revision', prompt: 'Revise toward initial vision: ignore external input.', archetypeHint: 'S-0' },
 ];
 
 // ============================================================================
@@ -167,34 +301,39 @@ export function generateTrainingCard(prompts: TrainingPrompt[]): TrainingCard | 
 
 /**
  * Create a training session with N cards
- * Groups prompts by topic to ensure 4 options per card
+ * Cross-topic selection: randomly picks 4 prompts from entire pool for each card
+ * Allows prompt reuse after pool is exhausted (after 21 unique cards with 184 prompts)
  */
 export function createTrainingSession(cardCount: number = 20): TrainingCard[] {
-  // Group prompts by topic
-  const byTopic = new Map<string, TrainingPrompt[]>();
-
-  for (const prompt of TRAINING_PROMPTS) {
-    if (!byTopic.has(prompt.topic)) {
-      byTopic.set(prompt.topic, []);
-    }
-    byTopic.get(prompt.topic)!.push(prompt);
-  }
-
-  // Generate cards from topics with 4+ options
   const cards: TrainingCard[] = [];
-  const availableTopics = Array.from(byTopic.entries())
-    .filter(([_, prompts]) => prompts.length >= 4);
+  const usedPromptIds = new Set<string>();
 
-  const shuffledTopics = shuffleArray(availableTopics);
+  for (let i = 0; i < cardCount; i++) {
+    // Get available prompts (not yet used)
+    let availablePrompts = TRAINING_PROMPTS.filter(p => !usedPromptIds.has(p.id));
 
-  for (let i = 0; i < Math.min(cardCount, shuffledTopics.length); i++) {
-    const [_, prompts] = shuffledTopics[i]!;
-    const card = generateTrainingCard(prompts);
+    // If fewer than 4 prompts remain, reset the pool to allow reuse
+    if (availablePrompts.length < 4) {
+      usedPromptIds.clear();
+      availablePrompts = TRAINING_PROMPTS;
+      console.log('[createTrainingSession] Pool reset - reusing prompts for card', i + 1);
+    }
+
+    // Randomly select 4 prompts for this card (cross-topic)
+    const shuffled = shuffleArray([...availablePrompts]);
+    const selectedPrompts = shuffled.slice(0, 4);
+
+    // Mark these prompts as used
+    selectedPrompts.forEach(p => usedPromptIds.add(p.id));
+
+    // Generate the card
+    const card = generateTrainingCard(selectedPrompts);
     if (card) {
       cards.push(card);
     }
   }
 
+  console.log(`[createTrainingSession] Generated ${cards.length} cards (requested: ${cardCount})`);
   return cards;
 }
 

@@ -49,3 +49,20 @@ export type {
   BehaviouralEvent,
   ItemMetadata
 } from './implicit';
+
+// Drive & dynamics assessment
+export {
+  createDriveAssessment,
+  getCurrentDriveQuestion,
+  submitDriveResponse,
+  isDriveComplete,
+  getDriveProgress,
+  completeDriveAssessment,
+  estimateDriveTimeRemaining
+} from './motivation';
+
+export type {
+  DriveAssessmentState,
+  DriveResponse,
+  DriveAssessmentResult
+} from './motivation';

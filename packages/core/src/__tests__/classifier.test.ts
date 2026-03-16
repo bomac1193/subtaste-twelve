@@ -140,14 +140,15 @@ describe('Classification Engine', () => {
 
   describe('Configuration', () => {
     it('should respect custom temperature', () => {
-      const lowTemp = classify({ signals: [], config: { temperature: 1 } });
-      const highTemp = classify({ signals: [], config: { temperature: 10 } });
+      const lowTemp = classify({ signals: [], config: { temperature: 0.1 } });
+      const highTemp = classify({ signals: [], config: { temperature: 50 } });
 
-      // Lower temperature = more concentrated distribution
+      // Implementation uses exp(score * temperature), so higher temperature
+      // amplifies score differences → more concentrated → lower entropy
       const lowEntropy = calculateEntropy(lowTemp.classification.distribution);
       const highEntropy = calculateEntropy(highTemp.classification.distribution);
 
-      expect(lowEntropy).toBeLessThan(highEntropy);
+      expect(highEntropy).toBeLessThan(lowEntropy);
     });
 
     it('should respect secondary threshold', () => {

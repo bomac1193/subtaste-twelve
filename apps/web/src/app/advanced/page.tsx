@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { HexagramDisplay } from '@/components/profiling/HexagramDisplay';
+import { useDebug } from '@/contexts/DebugContext';
 import { PANTHEON, type Designation } from '@subtaste/core';
 import { cn } from '@/lib/utils';
 
@@ -48,6 +49,7 @@ interface TasteGenome {
 
 export default function AdvancedPage() {
   const router = useRouter();
+  const { isDebugMode, debugUserId } = useDebug();
   const [genome, setGenome] = useState<TasteGenome | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +57,13 @@ export default function AdvancedPage() {
   useEffect(() => {
     const fetchGenome = async () => {
       try {
-        const userId = localStorage.getItem('subtaste_user_id');
+        // Get userId based on debug mode
+        let userId: string | null;
+        if (isDebugMode && debugUserId) {
+          userId = debugUserId;
+        } else {
+          userId = localStorage.getItem('subtaste_user_id');
+        }
 
         if (!userId) {
           router.push('/');
@@ -69,7 +77,8 @@ export default function AdvancedPage() {
           throw new Error(data.error || 'Failed to load profile');
         }
 
-        setGenome(data.genome);
+        // API returns genome directly, not wrapped in .genome
+        setGenome(data);
       } catch (err) {
         console.error('Load error:', err);
         setError(err instanceof Error ? err.message : 'Failed to load profile');
@@ -79,7 +88,7 @@ export default function AdvancedPage() {
     };
 
     fetchGenome();
-  }, [router]);
+  }, [router, isDebugMode, debugUserId]);
 
   if (loading) {
     return (
@@ -133,7 +142,7 @@ export default function AdvancedPage() {
     : [];
 
   return (
-    <div className="min-h-screen bg-void">
+    <div className={`min-h-screen bg-void ${isDebugMode ? 'pt-12' : ''}`}>
       <div className="container-lg page-padding">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -149,6 +158,13 @@ export default function AdvancedPage() {
             <p className="text-bone-muted">
               Deep insights into your creative genome
             </p>
+            {isDebugMode && (
+              <div className="mt-2">
+                <span className="inline-block px-3 py-1 bg-state-warning/20 text-state-warning text-xs font-mono rounded-full border border-state-warning/40">
+                  🐛 Debug Profile View
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Grid Layout */}

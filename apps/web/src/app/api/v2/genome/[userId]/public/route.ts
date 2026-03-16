@@ -21,25 +21,13 @@ export async function GET(
     );
   }
 
+  // toPublicGenome returns the complete public genome with all necessary fields
   const publicGenome = toPublicGenome(user.genome);
-  const designation = user.genome.classification.primary.designation;
-  const archetype = PANTHEON[designation as Designation];
 
   return NextResponse.json({
     ...publicGenome,
-    archetype: {
-      primary: {
-        designation: user.genome.classification.primary.designation,
-        glyph: archetype.glyph,
-        confidence: user.genome.classification.primary.confidence,
-      },
-      secondary: user.genome.classification.secondary ? {
-        designation: user.genome.classification.secondary.designation,
-        glyph: PANTHEON[user.genome.classification.secondary.designation as Designation].glyph,
-        confidence: user.genome.classification.secondary.confidence,
-      } : null,
-    },
-    confidence: user.genome.classification.primary.confidence,
+    signalCount: user.signalCount,
+    stagesCompleted: user.stagesCompleted,
     sigilRevealed: user.sigilRevealed,
   });
 }

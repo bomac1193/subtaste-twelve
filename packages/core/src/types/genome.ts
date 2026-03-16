@@ -106,6 +106,44 @@ export interface SubtasteContext {
 }
 
 /**
+ * Motivation profile — WHY someone creates/consumes
+ * Populated via 3 explicit questions + behavioral inference from signals
+ */
+export interface MotivationProfile {
+  expression: number;    // 0-1: creating to get something OUT
+  connection: number;    // 0-1: creating to REACH others
+  mastery: number;       // 0-1: technical excellence drive
+  discovery: number;     // 0-1: finding/exploring new things
+  identity: number;      // 0-1: defining self through taste
+}
+
+/**
+ * Social taste dynamics — HOW taste behaves around others
+ * Populated via 2 explicit questions + primarily behavioral inference
+ */
+export type SocialRole = 'tastemaker' | 'consumer' | 'contrarian' | 'bridger';
+
+export interface SocialProfile {
+  role: SocialRole;
+  tastemaker: number;    // 0-1: sets direction others follow
+  consumer: number;      // 0-1: absorbs culture
+  contrarian: number;    // 0-1: defines self against mainstream
+  bridger: number;       // 0-1: cross-pollinates between scenes
+}
+
+/**
+ * Perceptual sensitivity — HOW MUCH someone notices
+ * Purely behavioral — measured from training card responses, never asked
+ */
+export interface PerceptualSensitivity {
+  overall: number;        // 0-1: composite sensitivity score
+  consistency: number;    // 0-1: consistent choices across similar stimuli
+  discrimination: number; // 0-1: distinguishes subtle differences
+  responseSpeed: number;  // 0-1: normalized speed consistency (not raw speed)
+  sampleSize: number;     // training cards that contributed to this score
+}
+
+/**
  * Full TasteGenome structure
  */
 export interface TasteGenome {
@@ -170,6 +208,15 @@ export interface TasteGenome {
 
   // SUBTASTE CONTEXT (from Boveda enrichment)
   subtasteContext?: SubtasteContext;
+
+  // MOTIVATION - why they create/consume
+  motivation?: MotivationProfile;
+
+  // SOCIAL DYNAMICS - how taste behaves around others
+  socialDynamics?: SocialProfile;
+
+  // PERCEPTUAL SENSITIVITY - how much they notice (behavioral only)
+  perceptualSensitivity?: PerceptualSensitivity;
 }
 
 /**
@@ -190,6 +237,12 @@ export interface TasteGenomePublic {
   };
   confidence: number;
   tasteTypicality: number;
+  keywords?: KeywordScores;
+  gamification?: GamificationState;
+  behaviour?: BehaviourProfile;
+  motivation?: MotivationProfile;
+  socialDynamics?: SocialProfile;
+  perceptualSensitivity?: { overall: number };
 }
 
 /**

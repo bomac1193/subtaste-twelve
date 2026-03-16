@@ -33,7 +33,11 @@ export type {
   HexagramReading,
   KeywordScores,
   Gamification,
-  SubtasteContext
+  SubtasteContext,
+  MotivationProfile,
+  SocialRole,
+  SocialProfile,
+  PerceptualSensitivity
 } from './genome';
 
 // Signal types
