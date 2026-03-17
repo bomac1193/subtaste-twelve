@@ -110,7 +110,7 @@ export default function SignUpPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-0 pt-4 pb-3 bg-transparent border-0 border-b border-bone-faint/15 text-bone text-sm placeholder-bone-faint/30 focus:outline-none focus:border-bone-faint/40 transition-colors"
+              className="w-full px-3 pt-4 pb-3 bg-transparent border-0 border-b border-bone-faint/15 text-bone text-sm placeholder-bone-faint/30 focus:outline-none focus:border-bone-faint/40 transition-colors"
               placeholder="Name"
               disabled={loading}
             />
@@ -123,7 +123,7 @@ export default function SignUpPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-0 pt-4 pb-3 bg-transparent border-0 border-b border-bone-faint/15 text-bone text-sm placeholder-bone-faint/30 focus:outline-none focus:border-bone-faint/40 transition-colors"
+              className="w-full px-3 pt-4 pb-3 bg-transparent border-0 border-b border-bone-faint/15 text-bone text-sm placeholder-bone-faint/30 focus:outline-none focus:border-bone-faint/40 transition-colors"
               placeholder="Email"
               disabled={loading}
             />
@@ -137,7 +137,7 @@ export default function SignUpPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={8}
-              className="w-full px-0 pt-4 pb-3 bg-transparent border-0 border-b border-bone-faint/15 text-bone text-sm placeholder-bone-faint/30 focus:outline-none focus:border-bone-faint/40 transition-colors"
+              className="w-full px-3 pt-4 pb-3 bg-transparent border-0 border-b border-bone-faint/15 text-bone text-sm placeholder-bone-faint/30 focus:outline-none focus:border-bone-faint/40 transition-colors"
               placeholder="Password"
               disabled={loading}
             />
@@ -150,7 +150,7 @@ export default function SignUpPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full px-0 pt-4 pb-3 bg-transparent border-0 border-b border-bone-faint/15 text-bone text-sm placeholder-bone-faint/30 focus:outline-none focus:border-bone-faint/40 transition-colors"
+              className="w-full px-3 pt-4 pb-3 bg-transparent border-0 border-b border-bone-faint/15 text-bone text-sm placeholder-bone-faint/30 focus:outline-none focus:border-bone-faint/40 transition-colors"
               placeholder="Confirm password"
               disabled={loading}
             />

@@ -133,7 +133,9 @@ export function toPublicGenome(genome: TasteGenome): TasteGenomePublic {
     // Only expose overall sensitivity score publicly
     perceptualSensitivity: genome.perceptualSensitivity
       ? { overall: genome.perceptualSensitivity.overall }
-      : undefined
+      : undefined,
+    axes: genome.axes,
+    iching: genome.iching,
   };
 }
 

@@ -61,6 +61,7 @@ export function HexagramDisplay({
       </div>
 
       {/* Hexagram Lines (6 lines, bottom to top) */}
+      {hexagram.lines && (
       <div className="flex flex-col items-center gap-1">
         {[...hexagram.lines].reverse().map((isYang, idx) => {
           const lineNumber = 6 - idx;
@@ -122,6 +123,7 @@ export function HexagramDisplay({
           );
         })}
       </div>
+      )}
 
       {/* Judgment Text */}
       {!compact && (

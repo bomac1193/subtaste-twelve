@@ -66,12 +66,13 @@ export interface HexagramReading {
     name: string;
     chinese: string;
     judgment: string;
+    lines: boolean[];
   };
   transforming?: {
     number: number;
     name: string;
     chinese: string;
-    judgment: string;
+    judgment?: string;
   };
   movingLines: number[];
 }
@@ -238,11 +239,23 @@ export interface TasteGenomePublic {
   confidence: number;
   tasteTypicality: number;
   keywords?: KeywordScores;
-  gamification?: GamificationState;
-  behaviour?: BehaviourProfile;
+  gamification?: Gamification;
+  behaviour?: {
+    contexts: Record<string, ContextProfile>;
+    signalHistory: SignalEvent[];
+    confidence: number;
+    lastCalibration: Date;
+  };
   motivation?: MotivationProfile;
   socialDynamics?: SocialProfile;
   perceptualSensitivity?: { overall: number };
+  axes?: {
+    orderChaos: number;
+    mercyRuthlessness: number;
+    introvertExtrovert: number;
+    faithDoubt: number;
+  };
+  iching?: HexagramReading;
 }
 
 /**

@@ -199,5 +199,6 @@ export function toPublicHexagram(hex: Hexagram) {
     name: hex.name,
     chinese: hex.chinese,
     judgment: hex.judgment,
+    lines: hex.lines,
   };
 }

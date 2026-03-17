@@ -262,6 +262,7 @@ export default function AxesPage() {
                 </div>
 
                 {/* Hexagram Lines */}
+                {hexagram.present.lines && (
                 <div className="flex flex-col items-center gap-1 my-6">
                   {[...hexagram.present.lines].reverse().map((isYang, idx) => {
                     const lineNumber = 6 - idx;
@@ -307,6 +308,7 @@ export default function AxesPage() {
                     );
                   })}
                 </div>
+                )}
 
                 {/* Judgment */}
                 <div className="max-w-lg mx-auto p-6 border border-bone-faint/20 rounded bg-void-lighter/20">
