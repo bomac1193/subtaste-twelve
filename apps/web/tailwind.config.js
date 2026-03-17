@@ -25,8 +25,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        display: ['Playfair Display', 'serif'],
-        body: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['var(--font-canela)', 'DM Serif Display', 'Georgia', 'serif'],
+        body: ['var(--font-sohne)', 'Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       fontSize: {

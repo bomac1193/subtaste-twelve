@@ -152,8 +152,8 @@ export default function AdvancedPage() {
         >
           {/* Header */}
           <div className="text-center space-y-4">
-            <h1 className="font-display text-3xl md:text-4xl text-bone tracking-tight">
-              ADVANCED PROFILE
+            <h1 className="font-display text-3xl md:text-4xl text-bone">
+              Advanced Profile
             </h1>
             <p className="text-bone-muted">
               Deep insights into your creative genome
@@ -188,39 +188,24 @@ export default function AdvancedPage() {
                   <p className="text-bone-muted text-sm">{archetype.sigil}</p>
                 </div>
 
-                {archetype.phase && (
+                <div className="flex gap-6 pt-3">
                   <div>
-                    <p className="text-bone-faint text-xs mb-1">Phase</p>
-                    <p className="text-bone capitalize">{archetype.phase}</p>
+                    <p className="text-bone-faint text-[10px] tracking-wider mb-1">Phase</p>
+                    <p className="text-bone text-sm leading-none capitalize">{archetype.phase || '—'}</p>
                   </div>
-                )}
-
-                {archetype.wuXingElement && (
                   <div>
-                    <p className="text-bone-faint text-xs mb-1">Wu Xing Element</p>
-                    <p className="text-bone capitalize">
-                      {archetype.wuXingElement}
-                    </p>
+                    <p className="text-bone-faint text-[10px] tracking-wider mb-1">Element</p>
+                    <p className="text-bone text-sm leading-none capitalize">{archetype.wuXingElement || '—'}</p>
                   </div>
-                )}
-
-                {archetype.growthTarget && (
                   <div>
-                    <p className="text-bone-faint text-xs mb-1">Growth Path</p>
-                    <p className="text-bone-muted text-sm">
-                      → {PANTHEON[archetype.growthTarget]?.glyph || archetype.growthTarget}
-                    </p>
+                    <p className="text-bone-faint text-[10px] tracking-wider mb-1">Growth</p>
+                    <p className="text-bone-muted text-sm leading-none">{archetype.growthTarget ? PANTHEON[archetype.growthTarget]?.glyph || archetype.growthTarget : '—'}</p>
                   </div>
-                )}
-
-                {archetype.stressTarget && archetype.stressTarget !== 'Ø' && (
                   <div>
-                    <p className="text-bone-faint text-xs mb-1">Under Stress</p>
-                    <p className="text-bone-muted text-sm">
-                      → {PANTHEON[archetype.stressTarget]?.glyph || archetype.stressTarget}
-                    </p>
+                    <p className="text-bone-faint text-[10px] tracking-wider mb-1">Stress</p>
+                    <p className="text-bone-muted text-sm leading-none">{archetype.stressTarget && archetype.stressTarget !== 'Ø' ? PANTHEON[archetype.stressTarget]?.glyph || archetype.stressTarget : '—'}</p>
                   </div>
-                )}
+                </div>
               </div>
             </motion.section>
 

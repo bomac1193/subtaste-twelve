@@ -47,8 +47,8 @@ export default function ArchetypesPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="font-display text-3xl md:text-4xl text-bone mb-3 tracking-tight">
-            THE TWELVE
+          <h1 className="font-display text-3xl md:text-4xl text-bone mb-3">
+            The Twelve
           </h1>
           <p className="text-bone-faint text-sm">
             Twelve archetypal patterns of creative taste
@@ -202,54 +202,24 @@ export default function ArchetypesPage() {
                   </div>
 
                   {/* Metadata */}
-                  {selected.phase && (
-                    <div className="pt-6 border-t border-border-subtle/50">
-                      <div className="grid grid-cols-2 gap-4 text-xs">
-                        {selected.phase && (
-                          <div>
-                            <span className="text-bone-faint uppercase tracking-wider block mb-1">
-                              Phase
-                            </span>
-                            <span className="text-bone-muted">{selected.phase}</span>
-                          </div>
-                        )}
-                        {selected.wuXingElement && (
-                          <div>
-                            <span className="text-bone-faint uppercase tracking-wider block mb-1">
-                              Element
-                            </span>
-                            <span className="text-bone-muted">{selected.wuXingElement}</span>
-                          </div>
-                        )}
-                        {selected.growthTarget && (
-                          <div>
-                            <span className="text-bone-faint uppercase tracking-wider block mb-1">
-                              Growth →
-                            </span>
-                            <button
-                              className="text-bone-muted font-mono hover:text-bone transition-colors"
-                              onClick={() => setSelectedArchetype(selected.growthTarget!)}
-                            >
-                              {selected.growthTarget}
-                            </button>
-                          </div>
-                        )}
-                        {selected.stressTarget && (
-                          <div>
-                            <span className="text-bone-faint uppercase tracking-wider block mb-1">
-                              Stress →
-                            </span>
-                            <button
-                              className="text-bone-muted font-mono hover:text-bone transition-colors"
-                              onClick={() => setSelectedArchetype(selected.stressTarget!)}
-                            >
-                              {selected.stressTarget}
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                  <div className="flex gap-6 pt-5 border-t border-border-subtle/50">
+                    <div>
+                      <p className="text-bone-faint/50 text-[10px] tracking-wider mb-1">Phase</p>
+                      <p className="text-bone-muted text-xs leading-none capitalize">{selected.phase || '—'}</p>
                     </div>
-                  )}
+                    <div>
+                      <p className="text-bone-faint/50 text-[10px] tracking-wider mb-1">Element</p>
+                      <p className="text-bone-muted text-xs leading-none capitalize">{selected.wuXingElement || '—'}</p>
+                    </div>
+                    <div className={selected.growthTarget ? 'cursor-pointer' : ''} onClick={() => selected.growthTarget && setSelectedArchetype(selected.growthTarget!)}>
+                      <p className="text-bone-faint/50 text-[10px] tracking-wider mb-1">Growth</p>
+                      <p className="text-bone-muted text-xs leading-none">{selected.growthTarget ? PANTHEON[selected.growthTarget]?.glyph ?? selected.growthTarget : '—'}</p>
+                    </div>
+                    <div className={selected.stressTarget && selected.stressTarget !== 'Ø' ? 'cursor-pointer' : ''} onClick={() => selected.stressTarget && selected.stressTarget !== 'Ø' && setSelectedArchetype(selected.stressTarget!)}>
+                      <p className="text-bone-faint/50 text-[10px] tracking-wider mb-1">Stress</p>
+                      <p className="text-bone-muted text-xs leading-none">{selected.stressTarget && selected.stressTarget !== 'Ø' ? PANTHEON[selected.stressTarget]?.glyph ?? selected.stressTarget : '—'}</p>
+                    </div>
+                  </div>
                 </motion.div>
               ) : (
                 <motion.div
