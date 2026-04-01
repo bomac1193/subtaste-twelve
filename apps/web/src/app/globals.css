@@ -239,7 +239,7 @@ body {
   font-size: var(--text-sm);
   font-weight: 500;
   letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
+  text-transform: capitalize;
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-sm);
   transition: all var(--duration-fast) var(--ease-out);
@@ -318,6 +318,15 @@ body {
   border: var(--border-width-default) solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: var(--space-8);
+  transition: border-color 500ms var(--ease-out),
+              transform 500ms var(--ease-out),
+              box-shadow 500ms var(--ease-out);
+}
+
+.archetype-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(212, 175, 55, 0.04);
 }
 
 .archetype-card__glyph {

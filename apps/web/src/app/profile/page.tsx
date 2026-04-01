@@ -35,6 +35,10 @@ interface ProfilingProgress {
   stagesCompleted: string[];
 }
 
+function titleCase(s: string): string {
+  return s.charAt(0) + s.slice(1).toLowerCase();
+}
+
 export default function ProfilePage() {
   const router = useRouter();
   const { isDebugMode, debugUserId } = useDebug();
@@ -203,22 +207,26 @@ export default function ProfilePage() {
               transition={{ delay: 1.0 }}
             >
               <div className="space-y-4">
-                {/* Profile Strength Context */}
+                {/* Profile Forming - actionable banner */}
                 {progress && progress.signalCount < 80 && (
-                  <div className="px-4 py-3 rounded border border-border-subtle/50 bg-void-lighter/20">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-xs text-bone-faint tracking-wider">Profile Forming</p>
-                      <p className="text-xs text-bone-faint font-mono">{progress.signalCount} signals</p>
+                  <div className="px-5 py-4 rounded border border-bone-faint/10 bg-void-elevated/60 flex items-center justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-2">
+                        <p className="text-xs text-bone-faint tracking-wider">Profile forming</p>
+                        <div className="flex-1 h-px bg-border-subtle" />
+                        <p className="text-[10px] text-bone-faint font-mono">{progress.signalCount}/80</p>
+                      </div>
+                      <p className="text-bone-faint text-[10px] leading-relaxed">
+                        More attunement sharpens the separation between archetypes.
+                      </p>
                     </div>
-                    <div className="h-1 bg-void-lighter rounded-full overflow-hidden mb-2">
-                      <div
-                        className="h-full bg-bone-faint/40 transition-all"
-                        style={{ width: `${Math.min((progress.signalCount / 80) * 100, 100)}%` }}
-                      />
-                    </div>
-                    <p className="text-bone-faint text-[10px] leading-relaxed">
-                      Classification sharpens with more data. Run additional attunement sessions to increase separation between archetypes.
-                    </p>
+                    <button
+                      type="button"
+                      className="btn btn-secondary text-[10px] px-3 py-1.5 shrink-0"
+                      onClick={() => router.push('/training')}
+                    >
+                      Continue
+                    </button>
                   </div>
                 )}
 
@@ -228,7 +236,7 @@ export default function ProfilePage() {
 
                   {/* Classification Header */}
                   <div className="text-center mb-6">
-                    <h3 className="font-display text-3xl text-bone mb-2">{dominant.glyph}</h3>
+                    <h3 className="font-display text-3xl text-bone mb-2">{titleCase(dominant.glyph)}</h3>
                     <p className="text-bone-faint font-mono text-sm tracking-wider mb-1">{dominantDesignation}</p>
                     <p className="text-bone-muted text-sm italic">{dominant.creativeMode}</p>
                     <p className="text-bone-faint/40 text-xs font-mono mt-2">
@@ -261,7 +269,7 @@ export default function ProfilePage() {
                           <div className="flex-1">
                             <p className="text-[10px] tracking-wider text-bone-faint/50 mb-1">Growth Direction</p>
                             <p className="text-bone-muted text-xs">
-                              {growth.glyph} <span className="font-mono text-bone-faint">{dominant.growthTarget}</span>
+                              {titleCase(growth.glyph)} <span className="font-mono text-bone-faint">{dominant.growthTarget}</span>
                             </p>
                             <p className="text-bone-faint text-[10px] mt-0.5 leading-relaxed">
                               Lean into {growth.creativeMode.toLowerCase()} thinking to evolve.
@@ -275,7 +283,7 @@ export default function ProfilePage() {
                           <div className="flex-1">
                             <p className="text-[10px] tracking-wider text-bone-faint/50 mb-1">Under Stress</p>
                             <p className="text-bone-muted/60 text-xs">
-                              {stress.glyph} <span className="font-mono text-bone-faint">{dominant.stressTarget}</span>
+                              {titleCase(stress.glyph)} <span className="font-mono text-bone-faint">{dominant.stressTarget}</span>
                             </p>
                             <p className="text-bone-faint text-[10px] mt-0.5 leading-relaxed">
                               May collapse into {stress.creativeMode.toLowerCase()} patterns.
@@ -287,7 +295,7 @@ export default function ProfilePage() {
                         <div className="flex-1">
                           <p className="text-[10px] tracking-wider text-bone-faint/50 mb-1">Under Stress</p>
                           <p className="text-bone-muted/60 text-xs">
-                            {PANTHEON['Ø'].glyph} <span className="font-mono text-bone-faint">Ø</span>
+                            {titleCase(PANTHEON['Ø'].glyph)} <span className="font-mono text-bone-faint">Ø</span>
                           </p>
                           <p className="text-bone-faint text-[10px] mt-0.5 leading-relaxed">
                             May withdraw into receptive silence.
@@ -304,7 +312,7 @@ export default function ProfilePage() {
 
                   {/* Classification Header */}
                   <div className="text-center mb-6">
-                    <h3 className="font-display text-2xl text-bone-muted mb-2">{subdominant.glyph}</h3>
+                    <h3 className="font-display text-2xl text-bone-muted mb-2">{titleCase(subdominant.glyph)}</h3>
                     <p className="text-bone-faint font-mono text-sm tracking-wider mb-1">{subdominantDesignation}</p>
                     <p className="text-bone-faint text-sm italic">{subdominant.creativeMode}</p>
                     <p className="text-bone-faint/40 text-xs font-mono mt-2">
@@ -335,7 +343,7 @@ export default function ProfilePage() {
 
                   {/* Classification Header */}
                   <div className="text-center mb-6">
-                    <h3 className="font-display text-2xl text-bone-faint mb-2">{shadow.glyph}</h3>
+                    <h3 className="font-display text-2xl text-bone-faint mb-2">{titleCase(shadow.glyph)}</h3>
                     <p className="text-bone-faint/60 font-mono text-sm tracking-wider mb-1">{shadowDesignation}</p>
                     <p className="text-bone-faint text-sm italic">{shadow.creativeMode}</p>
                     <p className="text-bone-faint/40 text-xs font-mono mt-2">
@@ -347,7 +355,7 @@ export default function ProfilePage() {
                   <div className="pt-5 border-t border-border-subtle/50 space-y-3">
                     <p className="text-bone-faint text-sm leading-relaxed">{shadow.essence}</p>
                     <p className="text-bone-faint text-xs leading-relaxed">
-                      Under pressure, your dominant archetype collapses toward {shadow.glyph}.
+                      Under pressure, your dominant archetype collapses toward {titleCase(shadow.glyph)}.
                       {shadowDesignation === 'Ø'
                         ? ' This manifests as withdrawal into receptive silence, disengaging from active curation.'
                         : ` This manifests as over-relying on ${shadow.creativeMode.toLowerCase()} patterns at the expense of your natural strengths.`}
@@ -422,18 +430,18 @@ export default function ProfilePage() {
                           return (
                             <div
                               key={designation}
-                              className={`rounded border px-3 py-3 text-center ${
+                              className={`rounded border px-3 py-3 text-center transition-all duration-500 cursor-default ${
                                 isPrimary
-                                  ? 'border-bone/30 bg-bone/5'
+                                  ? 'border-bone/30 bg-bone/5 hover:border-bone/50 hover:bg-bone/8'
                                   : isSecondary
-                                    ? 'border-bone-faint/20 bg-bone/[0.02]'
-                                    : 'border-border-subtle/50 bg-void-lighter/20'
+                                    ? 'border-bone-faint/20 bg-bone/[0.02] hover:border-bone-faint/35 hover:bg-bone/[0.04]'
+                                    : 'border-border-subtle/50 bg-void-lighter/20 hover:border-border-subtle hover:bg-void-lighter/40'
                               }`}
                             >
                               <p className={`font-display text-sm mb-0.5 ${
                                 isPrimary ? 'text-bone' : isSecondary ? 'text-bone-muted' : 'text-bone-faint'
                               }`}>
-                                {archetype.glyph}
+                                {titleCase(archetype.glyph)}
                               </p>
                               <p className={`font-mono text-[10px] tracking-wider mb-1.5 ${
                                 isPrimary ? 'text-bone-muted' : 'text-bone-faint/60'
@@ -449,7 +457,7 @@ export default function ProfilePage() {
                                 {percentage}%
                               </p>
                               <p className="text-bone-faint/30 text-[8px] tracking-wider mt-0.5">
-                                AFFINITY
+                                Affinity
                               </p>
                             </div>
                           );

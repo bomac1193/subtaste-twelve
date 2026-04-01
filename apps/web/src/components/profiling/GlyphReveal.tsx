@@ -27,6 +27,10 @@ interface GlyphRevealProps {
  * Three-tier system: Glyph (always), Sigil (on request), Shadow (on sigil reveal).
  * Not celebratory - revelatory.
  */
+function titleCase(s: string): string {
+  return s.charAt(0) + s.slice(1).toLowerCase();
+}
+
 export function GlyphReveal({
   glyph,
   sigil,
@@ -56,7 +60,7 @@ export function GlyphReveal({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h1 className="archetype-card__glyph">{glyph}</h1>
+          <h1 className="archetype-card__glyph">{titleCase(glyph)}</h1>
         </motion.div>
 
         {/* Essence */}
@@ -127,7 +131,7 @@ export function GlyphReveal({
               Secondary influence
             </span>
             <p className="text-bone-muted mt-1">
-              {secondary.glyph}{' '}
+              {titleCase(secondary.glyph)}{' '}
               <span className="text-bone-faint text-sm">
                 ({Math.round(secondary.confidence * 100)}%)
               </span>

@@ -169,7 +169,7 @@ export default function SignUpPage() {
           <motion.button
             type="submit"
             disabled={loading}
-            className="w-full py-3 text-xs tracking-[0.2em] uppercase text-void bg-bone hover:bg-bone/90 transition-all duration-300 disabled:opacity-40"
+            className="w-full py-3 text-xs tracking-[0.2em] capitalize text-void bg-bone hover:bg-bone/90 transition-all duration-300 disabled:opacity-40"
             whileTap={{ scale: 0.98 }}
           >
             {loading ? 'Initiating...' : 'Begin'}

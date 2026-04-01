@@ -47,6 +47,10 @@ interface TasteGenome {
   };
 }
 
+function titleCase(s: string): string {
+  return s.charAt(0) + s.slice(1).toLowerCase();
+}
+
 export default function AdvancedPage() {
   const router = useRouter();
   const { isDebugMode, debugUserId } = useDebug();
@@ -183,7 +187,7 @@ export default function AdvancedPage() {
                 <div>
                   <p className="text-bone-faint text-xs mb-1">Primary</p>
                   <p className="text-bone text-2xl font-display">
-                    {archetype.glyph}
+                    {titleCase(archetype.glyph)}
                   </p>
                   <p className="text-bone-muted text-sm">{archetype.sigil}</p>
                 </div>
@@ -199,11 +203,11 @@ export default function AdvancedPage() {
                   </div>
                   <div>
                     <p className="text-bone-faint text-[10px] tracking-wider mb-1">Growth</p>
-                    <p className="text-bone-muted text-sm leading-none">{archetype.growthTarget ? PANTHEON[archetype.growthTarget]?.glyph || archetype.growthTarget : '-'}</p>
+                    <p className="text-bone-muted text-sm leading-none">{archetype.growthTarget ? titleCase(PANTHEON[archetype.growthTarget]?.glyph || archetype.growthTarget) : '-'}</p>
                   </div>
                   <div>
                     <p className="text-bone-faint text-[10px] tracking-wider mb-1">Stress</p>
-                    <p className="text-bone-muted text-sm leading-none">{archetype.stressTarget && archetype.stressTarget !== 'Ø' ? PANTHEON[archetype.stressTarget]?.glyph || archetype.stressTarget : '-'}</p>
+                    <p className="text-bone-muted text-sm leading-none">{archetype.stressTarget && archetype.stressTarget !== 'Ø' ? titleCase(PANTHEON[archetype.stressTarget]?.glyph || archetype.stressTarget) : '-'}</p>
                   </div>
                 </div>
               </div>

@@ -6,6 +6,10 @@ import { useState } from 'react';
 import { PANTHEON } from '@subtaste/core';
 import type { Designation } from '@subtaste/core';
 
+function titleCase(s: string): string {
+  return s.charAt(0) + s.slice(1).toLowerCase();
+}
+
 export default function ArchetypesPage() {
   const router = useRouter();
   const [selectedArchetype, setSelectedArchetype] = useState<Designation | null>(null);
@@ -103,7 +107,7 @@ export default function ArchetypesPage() {
                       <span className={`font-display text-sm mb-1 transition-colors ${
                         isSelected ? 'text-bone' : 'text-bone-muted'
                       }`}>
-                        {archetype.glyph}
+                        {titleCase(archetype.glyph)}
                       </span>
                       <span className={`text-[10px] font-mono transition-colors ${
                         isSelected ? 'text-bone-muted' : 'text-bone-faint'
@@ -158,7 +162,7 @@ export default function ArchetypesPage() {
                   <div className="flex items-baseline justify-between mb-4">
                     <div className="flex items-baseline gap-3">
                       <h2 className="font-display text-3xl text-bone">
-                        {selected.glyph}
+                        {titleCase(selected.glyph)}
                       </h2>
                       <span className="text-bone-faint text-sm font-mono">
                         {selected.designation}
@@ -213,11 +217,11 @@ export default function ArchetypesPage() {
                     </div>
                     <div className={selected.growthTarget ? 'cursor-pointer' : ''} onClick={() => selected.growthTarget && setSelectedArchetype(selected.growthTarget!)}>
                       <p className="text-bone-faint/50 text-[10px] tracking-wider mb-1">Growth</p>
-                      <p className="text-bone-muted text-xs leading-none">{selected.growthTarget ? PANTHEON[selected.growthTarget]?.glyph ?? selected.growthTarget : '-'}</p>
+                      <p className="text-bone-muted text-xs leading-none">{selected.growthTarget ? titleCase(PANTHEON[selected.growthTarget]?.glyph ?? selected.growthTarget) : '-'}</p>
                     </div>
                     <div className={selected.stressTarget && selected.stressTarget !== 'Ø' ? 'cursor-pointer' : ''} onClick={() => selected.stressTarget && selected.stressTarget !== 'Ø' && setSelectedArchetype(selected.stressTarget!)}>
                       <p className="text-bone-faint/50 text-[10px] tracking-wider mb-1">Stress</p>
-                      <p className="text-bone-muted text-xs leading-none">{selected.stressTarget && selected.stressTarget !== 'Ø' ? PANTHEON[selected.stressTarget]?.glyph ?? selected.stressTarget : '-'}</p>
+                      <p className="text-bone-muted text-xs leading-none">{selected.stressTarget && selected.stressTarget !== 'Ø' ? titleCase(PANTHEON[selected.stressTarget]?.glyph ?? selected.stressTarget) : '-'}</p>
                     </div>
                   </div>
                 </motion.div>

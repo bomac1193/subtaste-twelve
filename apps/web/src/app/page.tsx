@@ -22,6 +22,10 @@ function getPos(index: number, total: number) {
   return { x: CX + RADIUS * Math.cos(rad), y: CY + RADIUS * Math.sin(rad) };
 }
 
+function titleCase(s: string): string {
+  return s.charAt(0) + s.slice(1).toLowerCase();
+}
+
 export default function HomePage() {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
@@ -146,7 +150,7 @@ export default function HomePage() {
                       }`}
                       style={{ fontFamily: 'var(--font-canela), Georgia, serif' }}
                     >
-                      {a.glyph}
+                      {titleCase(a.glyph)}
                     </text>
                   </g>
                 );
@@ -168,7 +172,7 @@ export default function HomePage() {
                   <button
                     type="button"
                     onClick={() => router.push('/profile')}
-                    className="text-bone text-xs tracking-[0.25em] uppercase hover:text-bone/70 transition-colors duration-500"
+                    className="text-bone text-xs tracking-[0.25em] capitalize hover:text-bone/70 transition-colors duration-500"
                   >
                     Enter
                   </button>
@@ -176,14 +180,14 @@ export default function HomePage() {
                   <button
                     type="button"
                     onClick={() => router.push('/training')}
-                    className="text-bone-faint/40 text-[10px] tracking-[0.2em] uppercase hover:text-bone-faint/70 transition-colors duration-500"
+                    className="text-bone-faint/40 text-[10px] tracking-[0.2em] capitalize hover:text-bone-faint/70 transition-colors duration-500"
                   >
                     Attunement
                   </button>
                   <button
                     type="button"
                     onClick={() => router.push('/axes')}
-                    className="text-bone-faint/40 text-[10px] tracking-[0.2em] uppercase hover:text-bone-faint/70 transition-colors duration-500"
+                    className="text-bone-faint/40 text-[10px] tracking-[0.2em] capitalize hover:text-bone-faint/70 transition-colors duration-500"
                   >
                     Calibration
                   </button>
@@ -193,7 +197,7 @@ export default function HomePage() {
                   <button
                     type="button"
                     onClick={() => router.push('/auth/signup')}
-                    className="text-bone text-xs tracking-[0.25em] uppercase hover:text-bone/70 transition-colors duration-500"
+                    className="text-bone text-xs tracking-[0.25em] capitalize hover:text-bone/70 transition-colors duration-500"
                   >
                     Begin
                   </button>
@@ -201,7 +205,7 @@ export default function HomePage() {
                   <button
                     type="button"
                     onClick={() => router.push('/auth/signin')}
-                    className="text-bone-faint/40 text-[10px] tracking-[0.2em] uppercase hover:text-bone-faint/70 transition-colors duration-500"
+                    className="text-bone-faint/40 text-[10px] tracking-[0.2em] capitalize hover:text-bone-faint/70 transition-colors duration-500"
                   >
                     Sign in
                   </button>
@@ -224,7 +228,7 @@ export default function HomePage() {
                     {/* Name + designation */}
                     <div className="flex items-baseline justify-between">
                       <h2 className="font-display text-2xl text-bone">
-                        {selectedArchetype.glyph}
+                        {titleCase(selectedArchetype.glyph)}
                       </h2>
                       <span className="text-bone-faint/30 text-[10px] tracking-[0.2em] font-mono uppercase">
                         {selectedArchetype.designation}
@@ -280,7 +284,7 @@ export default function HomePage() {
                         <div onClick={() => handleSelect(selectedArchetype.growthTarget!)} className="cursor-pointer">
                           <p className="text-bone-faint/20 text-[9px] tracking-[0.1em] mb-1">Growth</p>
                           <p className="text-bone-faint/45 text-[11px] leading-none hover:text-bone transition-colors duration-300">
-                            {PANTHEON[selectedArchetype.growthTarget]?.glyph ?? selectedArchetype.growthTarget}
+                            {titleCase(PANTHEON[selectedArchetype.growthTarget]?.glyph ?? selectedArchetype.growthTarget)}
                           </p>
                         </div>
                       )}
