@@ -7,8 +7,11 @@ import { GlyphReveal } from '@/components/profiling/GlyphReveal';
 import { useDebug } from '@/contexts/DebugContext';
 import {
   PANTHEON,
+  DESIGNATION_TO_SYMBOL,
+  profileSharpness,
+  distributionEntropy,
   type Glyph,
-  type Sigil,
+  type Seal,
   type CreativeMode,
   type Designation
 } from '@subtaste/core';
@@ -16,7 +19,7 @@ import {
 interface GenomeData {
   glyph: Glyph;
   designation: Designation;
-  sigil: Sigil;
+  seal: Seal;
   essence: string;
   creativeMode: CreativeMode;
   shadow: string;
@@ -95,7 +98,7 @@ export default function ProfilePage() {
         setGenome({
           glyph: archetype.glyph,
           designation,
-          sigil: archetype.sigil,
+          seal: archetype.seal,
           essence: archetype.essence,
           creativeMode: archetype.creativeMode as CreativeMode,
           shadow: archetype.shadow,
@@ -176,7 +179,7 @@ export default function ProfilePage() {
       >
         <GlyphReveal
           glyph={genome.glyph}
-          sigil={genome.sigil}
+          sigil={genome.seal}
           essence={genome.essence}
           creativeMode={genome.creativeMode}
           shadow={genome.shadow}
@@ -207,28 +210,40 @@ export default function ProfilePage() {
               transition={{ delay: 1.0 }}
             >
               <div className="space-y-4">
-                {/* Profile Forming - actionable banner */}
-                {progress && progress.signalCount < 80 && (
-                  <div className="px-5 py-4 rounded border border-bone-faint/10 bg-void-elevated/60 flex items-center justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2">
-                        <p className="text-xs text-bone-faint tracking-wider">Profile forming</p>
-                        <div className="flex-1 h-px bg-border-subtle" />
-                        <p className="text-[10px] text-bone-faint font-mono">{progress.signalCount}/80</p>
+                {/* Profile Sharpness - entropy-based actionable banner */}
+                {genome.distribution && (() => {
+                  const sharpness = profileSharpness(genome.distribution);
+                  if (sharpness === 'crystallized') return null;
+                  const entropy = distributionEntropy(genome.distribution);
+                  const sharpnessPercent = Math.round((1 - entropy) * 100);
+                  const labels: Record<string, { label: string; hint: string }> = {
+                    forming: { label: 'Profile forming', hint: 'More attunement will reveal clearer archetype separation.' },
+                    emerging: { label: 'Profile emerging', hint: 'Patterns are appearing. Continue to sharpen your classification.' },
+                    defined: { label: 'Profile defined', hint: 'Clear archetype identified. Further attunement refines the edges.' },
+                  };
+                  const { label, hint } = labels[sharpness];
+                  return (
+                    <div className="px-5 py-4 rounded border border-bone-faint/10 bg-void-elevated/60 flex items-center justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-2">
+                          <p className="text-xs text-bone-faint tracking-wider">{label}</p>
+                          <div className="flex-1 h-1 bg-void-subtle rounded-full overflow-hidden">
+                            <div className="h-full bg-bone-faint/40 rounded-full transition-all duration-1000" style={{ width: `${sharpnessPercent}%` }} />
+                          </div>
+                          <p className="text-[10px] text-bone-faint font-mono">{sharpnessPercent}%</p>
+                        </div>
+                        <p className="text-bone-faint text-[10px] leading-relaxed">{hint}</p>
                       </div>
-                      <p className="text-bone-faint text-[10px] leading-relaxed">
-                        More attunement sharpens the separation between archetypes.
-                      </p>
+                      <button
+                        type="button"
+                        className="btn btn-secondary text-[10px] px-3 py-1.5 shrink-0"
+                        onClick={() => router.push('/training')}
+                      >
+                        Continue
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      className="btn btn-secondary text-[10px] px-3 py-1.5 shrink-0"
-                      onClick={() => router.push('/training')}
-                    >
-                      Continue
-                    </button>
-                  </div>
-                )}
+                  );
+                })()}
 
                 {/* Dominant */}
                 <div className="archetype-card">
@@ -237,7 +252,7 @@ export default function ProfilePage() {
                   {/* Classification Header */}
                   <div className="text-center mb-6">
                     <h3 className="font-display text-3xl text-bone mb-2">{titleCase(dominant.glyph)}</h3>
-                    <p className="text-bone-faint font-mono text-sm tracking-wider mb-1">{dominantDesignation}</p>
+                    <p className="text-bone-faint font-mono text-sm tracking-wider mb-1">{dominant.symbol}</p>
                     <p className="text-bone-muted text-sm italic">{dominant.creativeMode}</p>
                     <p className="text-bone-faint/40 text-xs font-mono mt-2">
                       {((sorted[0]?.[1] ?? 0) * 100).toFixed(1)}%
@@ -269,7 +284,7 @@ export default function ProfilePage() {
                           <div className="flex-1">
                             <p className="text-[10px] tracking-wider text-bone-faint/50 mb-1">Growth Direction</p>
                             <p className="text-bone-muted text-xs">
-                              {titleCase(growth.glyph)} <span className="font-mono text-bone-faint">{dominant.growthTarget}</span>
+                              {titleCase(growth.glyph)} <span className="font-mono text-bone-faint">{PANTHEON[dominant.growthTarget!].symbol}</span>
                             </p>
                             <p className="text-bone-faint text-[10px] mt-0.5 leading-relaxed">
                               Lean into {growth.creativeMode.toLowerCase()} thinking to evolve.
@@ -283,7 +298,7 @@ export default function ProfilePage() {
                           <div className="flex-1">
                             <p className="text-[10px] tracking-wider text-bone-faint/50 mb-1">Under Stress</p>
                             <p className="text-bone-muted/60 text-xs">
-                              {titleCase(stress.glyph)} <span className="font-mono text-bone-faint">{dominant.stressTarget}</span>
+                              {titleCase(stress.glyph)} <span className="font-mono text-bone-faint">{PANTHEON[dominant.stressTarget!].symbol}</span>
                             </p>
                             <p className="text-bone-faint text-[10px] mt-0.5 leading-relaxed">
                               May collapse into {stress.creativeMode.toLowerCase()} patterns.
@@ -313,7 +328,7 @@ export default function ProfilePage() {
                   {/* Classification Header */}
                   <div className="text-center mb-6">
                     <h3 className="font-display text-2xl text-bone-muted mb-2">{titleCase(subdominant.glyph)}</h3>
-                    <p className="text-bone-faint font-mono text-sm tracking-wider mb-1">{subdominantDesignation}</p>
+                    <p className="text-bone-faint font-mono text-sm tracking-wider mb-1">{subdominant.symbol}</p>
                     <p className="text-bone-faint text-sm italic">{subdominant.creativeMode}</p>
                     <p className="text-bone-faint/40 text-xs font-mono mt-2">
                       {((sorted[1]?.[1] ?? 0) * 100).toFixed(1)}%
@@ -344,7 +359,7 @@ export default function ProfilePage() {
                   {/* Classification Header */}
                   <div className="text-center mb-6">
                     <h3 className="font-display text-2xl text-bone-faint mb-2">{titleCase(shadow.glyph)}</h3>
-                    <p className="text-bone-faint/60 font-mono text-sm tracking-wider mb-1">{shadowDesignation}</p>
+                    <p className="text-bone-faint/60 font-mono text-sm tracking-wider mb-1">{shadow.symbol}</p>
                     <p className="text-bone-faint text-sm italic">{shadow.creativeMode}</p>
                     <p className="text-bone-faint/40 text-xs font-mono mt-2">
                       {((genome.distribution?.[shadowDesignation] ?? 0) * 100).toFixed(1)}%
@@ -446,7 +461,7 @@ export default function ProfilePage() {
                               <p className={`font-mono text-[10px] tracking-wider mb-1.5 ${
                                 isPrimary ? 'text-bone-muted' : 'text-bone-faint/60'
                               }`}>
-                                {designation}
+                                {archetype.symbol}
                               </p>
                               <p className="text-bone-faint text-[10px] italic mb-2">
                                 {archetype.creativeMode}
@@ -470,9 +485,14 @@ export default function ProfilePage() {
                     <div className="pt-4 border-t border-border-subtle">
                       <p className="text-xs text-bone-faint text-center">
                         Based on {progress.signalCount} signals • {progress.stagesCompleted.length}/3 stages completed
-                      </p>
-                      <p className="text-xs text-bone-faint text-center mt-1">
-                        More signals = higher confidence and better understanding
+                        {genome.distribution && (() => {
+                          const sharpness = profileSharpness(genome.distribution);
+                          return (
+                            <span className="ml-1">
+                              • Classification: <span className="capitalize">{sharpness}</span>
+                            </span>
+                          );
+                        })()}
                       </p>
                     </div>
                   )}

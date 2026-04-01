@@ -123,7 +123,7 @@ export default function HomePage() {
                       className={`transition-all duration-500 ${isActive ? 'fill-bone' : 'fill-bone-faint/30'}`}
                     />
 
-                    {/* Designation code */}
+                    {/* Symbol */}
                     <text
                       x={pos.x}
                       y={pos.y + (pos.y < CY ? -14 : 18)}
@@ -133,7 +133,7 @@ export default function HomePage() {
                       }`}
                       style={{ letterSpacing: '0.08em' }}
                     >
-                      {d}
+                      {PANTHEON[d].symbol}
                     </text>
 
                     {/* Glyph name */}
@@ -231,13 +231,13 @@ export default function HomePage() {
                         {titleCase(selectedArchetype.glyph)}
                       </h2>
                       <span className="text-bone-faint/30 text-[10px] tracking-[0.2em] font-mono uppercase">
-                        {selectedArchetype.designation}
+                        {selectedArchetype.symbol}
                       </span>
                     </div>
 
-                    {/* Sigil */}
+                    {/* Seal */}
                     <p className="text-bone-faint/50 text-xs tracking-[0.15em] italic">
-                      {selectedArchetype.sigil}
+                      {selectedArchetype.seal}
                     </p>
 
                     {/* Essence */}

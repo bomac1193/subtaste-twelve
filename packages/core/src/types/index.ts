@@ -5,18 +5,23 @@
 // Archetype types
 export type {
   Designation,
+  Symbol,
   Glyph,
-  Sigil,
+  Seal,
+  Sigil, // deprecated alias for Seal
   CreativeMode,
   ArchetypePublic,
   ArchetypeClassification,
-  SigilReveal
+  SealReveal,
+  SigilReveal // deprecated alias for SealReveal
 } from './archetype';
 
 export {
   ALL_DESIGNATIONS,
+  ALL_SYMBOLS,
   GLYPH_TO_DESIGNATION,
-  DESIGNATION_TO_GLYPH
+  DESIGNATION_TO_GLYPH,
+  DESIGNATION_TO_SYMBOL
 } from './archetype';
 
 // Genome types

@@ -112,7 +112,7 @@ export default function ArchetypesPage() {
                       <span className={`text-[10px] font-mono transition-colors ${
                         isSelected ? 'text-bone-muted' : 'text-bone-faint'
                       }`}>
-                        {archetype.designation}
+                        {archetype.symbol}
                       </span>
                     </div>
                   </motion.button>
@@ -165,11 +165,11 @@ export default function ArchetypesPage() {
                         {titleCase(selected.glyph)}
                       </h2>
                       <span className="text-bone-faint text-sm font-mono">
-                        {selected.designation}
+                        {selected.symbol}
                       </span>
                     </div>
                     <span className="text-bone-muted text-sm italic">
-                      {selected.sigil}
+                      {selected.seal}
                     </span>
                   </div>
 

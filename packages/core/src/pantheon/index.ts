@@ -10,10 +10,13 @@ export {
   PANTHEON,
   getArchetype,
   getArchetypeByGlyph,
-  getArchetypeBySigil,
+  getArchetypeBySeal,
+  getArchetypeBySigil, // deprecated alias
   toGlyph,
   toDesignation,
-  toSigil,
+  toSymbol,
+  toSeal,
+  toSigil, // deprecated alias
   getAllDesignations,
   getAllGlyphs
 } from './definitions';

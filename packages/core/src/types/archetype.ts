@@ -2,22 +2,42 @@
  * @subtaste/core - Archetype Type Definitions
  *
  * THE TWELVE carry three registers of identity:
- * - Designation: Alphanumeric (internal, classified, power users)
+ * - Symbol: Mathematical operator (structural, functional meaning)
  * - Glyph: The spoken name (public, identity, what users claim)
- * - Sigil: Formal notation (revealed on request, adds mystique)
+ * - Seal: Operative phrase (revealed on request, proverbial)
+ *
+ * Internal designation keys (S-0, T-1, etc.) are preserved for
+ * database compatibility. Symbol is the user-facing display form.
  */
 
 export type Designation =
   | 'S-0' | 'T-1' | 'V-2' | 'L-3' | 'C-4' | 'N-5'
   | 'H-6' | 'P-7' | 'D-8' | 'F-9' | 'R-10' | 'Ø';
 
+export type Symbol =
+  | 'Θ' | 'Σ' | 'Δ' | 'Λ' | 'Ξ' | '∇'
+  | 'Φ' | 'Ω' | 'Ψ' | 'Π' | 'Γ' | 'Ø';
+
 export type Glyph =
   | 'KETH' | 'STRATA' | 'OMEN' | 'SILT' | 'CULL' | 'LIMN'
   | 'TOLL' | 'VAULT' | 'WICK' | 'ANVIL' | 'SCHISM' | 'VOID';
 
-export type Sigil =
-  | 'Aethonis' | 'Tectris' | 'Vatis' | 'Seris' | 'Severis' | 'Nexilis'
-  | 'Voxis' | 'Palimpsest' | 'Siphis' | 'Crucis' | 'Apostis' | 'Lacuna';
+export type Seal =
+  | 'The throne that does not announce'
+  | 'Layer beneath layer beneath layer'
+  | 'What arrives before itself'
+  | 'What accumulates in darkness'
+  | 'The necessary cut'
+  | 'The edge that reveals'
+  | 'The bell that cannot be unheard'
+  | 'Writing over writing over writing'
+  | 'The hollow channel'
+  | 'Where pressure becomes form'
+  | 'What breaks to reveal grain'
+  | 'What receives by containing nothing';
+
+/** @deprecated Use Seal instead */
+export type Sigil = Seal;
 
 export type CreativeMode =
   | 'Visionary' | 'Architectural' | 'Prophetic' | 'Developmental'
@@ -30,12 +50,15 @@ export type CreativeMode =
  */
 export interface ArchetypePublic {
   designation: Designation;
+  symbol: Symbol;
   glyph: Glyph;
-  sigil: Sigil;
+  seal: Seal;
   essence: string;
   creativeMode: CreativeMode;
   shadow: string;
   recogniseBy: string;
+  /** @deprecated Use seal instead */
+  sigil?: Seal;
 }
 
 /**
@@ -56,13 +79,16 @@ export interface ArchetypeClassification {
 }
 
 /**
- * Sigil reveal status tracking
+ * Seal reveal status tracking
  */
-export interface SigilReveal {
+export interface SealReveal {
   revealed: boolean;
   revealedAt: Date | null;
-  sigil: Sigil | null;
+  seal: Seal | null;
 }
+
+/** @deprecated Use SealReveal instead */
+export type SigilReveal = SealReveal;
 
 /**
  * All 12 designations for iteration
@@ -70,6 +96,14 @@ export interface SigilReveal {
 export const ALL_DESIGNATIONS: readonly Designation[] = [
   'S-0', 'T-1', 'V-2', 'L-3', 'C-4', 'N-5',
   'H-6', 'P-7', 'D-8', 'F-9', 'R-10', 'Ø'
+] as const;
+
+/**
+ * All 12 symbols for iteration
+ */
+export const ALL_SYMBOLS: readonly Symbol[] = [
+  'Θ', 'Σ', 'Δ', 'Λ', 'Ξ', '∇',
+  'Φ', 'Ω', 'Ψ', 'Π', 'Γ', 'Ø'
 ] as const;
 
 /**
@@ -106,4 +140,22 @@ export const DESIGNATION_TO_GLYPH: Record<Designation, Glyph> = {
   'F-9': 'ANVIL',
   'R-10': 'SCHISM',
   'Ø': 'VOID'
+} as const;
+
+/**
+ * Mapping from Designation to Symbol
+ */
+export const DESIGNATION_TO_SYMBOL: Record<Designation, Symbol> = {
+  'S-0': 'Θ',
+  'T-1': 'Σ',
+  'V-2': 'Δ',
+  'L-3': 'Λ',
+  'C-4': 'Ξ',
+  'N-5': '∇',
+  'H-6': 'Φ',
+  'P-7': 'Ω',
+  'D-8': 'Ψ',
+  'F-9': 'Π',
+  'R-10': 'Γ',
+  'Ø': 'Ø'
 } as const;

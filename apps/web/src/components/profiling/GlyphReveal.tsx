@@ -166,10 +166,10 @@ export function GlyphReveal({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              {/* Sigil */}
+              {/* Seal */}
               <div>
                 <span className="text-xs capitalize tracking-wider text-bone-faint">
-                  Sigil
+                  Seal
                 </span>
                 <p className="font-display text-xl text-rime-bright mt-1 tracking-wide">
                   {sigil}

@@ -4,9 +4,9 @@
  * Unified taste genome infrastructure for the VIOLET SPHINX ecosystem.
  *
  * THE TWELVE carry three registers of identity:
- * - Designation: Alphanumeric (internal, classified, power users)
- * - Glyph: The spoken name (public, identity, what users claim)
- * - Sigil: Formal notation (revealed on request, adds mystique)
+ * - Symbol: Mathematical operator (Θ, Σ, Δ...) - structural, functional
+ * - Glyph: The spoken name (Keth, Strata, Omen...) - public identity
+ * - Seal: Operative phrase - proverbial, revealed on request
  */
 
 // ============================================================================
@@ -16,12 +16,15 @@
 export type {
   // Archetype types
   Designation,
+  Symbol,
   Glyph,
-  Sigil,
+  Seal,
+  Sigil, // deprecated alias
   CreativeMode,
   ArchetypePublic,
   ArchetypeClassification,
-  SigilReveal,
+  SealReveal,
+  SigilReveal, // deprecated alias
 
   // Genome types
   OpennessFacets,
@@ -56,8 +59,10 @@ export type {
 
 export {
   ALL_DESIGNATIONS,
+  ALL_SYMBOLS,
   GLYPH_TO_DESIGNATION,
   DESIGNATION_TO_GLYPH,
+  DESIGNATION_TO_SYMBOL,
   isExplicitSignal,
   isImplicitSignal,
   SIGNAL_WEIGHTS
@@ -71,10 +76,13 @@ export {
   PANTHEON,
   getArchetype,
   getArchetypeByGlyph,
-  getArchetypeBySigil,
+  getArchetypeBySeal,
+  getArchetypeBySigil, // deprecated alias
   toGlyph,
   toDesignation,
-  toSigil,
+  toSymbol,
+  toSeal,
+  toSigil, // deprecated alias
   getAllDesignations,
   getAllGlyphs,
   ARCHETYPE_DESCRIPTIONS,
@@ -187,6 +195,30 @@ export {
 } from './iching';
 
 export type { Hexagram } from './iching';
+
+// ============================================================================
+// KEYWORDS
+// ============================================================================
+
+// ============================================================================
+// FRACTAL TOPOLOGY (Eglash)
+// ============================================================================
+
+export {
+  FRACTAL_COORDINATES,
+  computeCompatibility,
+  analyzeTeam,
+  distributionEntropy,
+  profileSharpness,
+  crossDomainCoherence,
+  kuramotoOrderParameter
+} from './engine/fractal-topology';
+
+export type {
+  FractalCoordinate,
+  CompatibilityResult,
+  TeamAnalysis
+} from './engine/fractal-topology';
 
 // ============================================================================
 // KEYWORDS

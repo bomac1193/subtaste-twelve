@@ -2,13 +2,13 @@
  * @subtaste/core - THE TWELVE Archetype Definitions
  *
  * The Pantheon: twelve archetypal patterns of creative taste.
- * Each carries three registers: Designation, Glyph, Sigil.
+ * Each carries three registers: Symbol (mathematical), Glyph (spoken), Seal (operative).
  */
 
-import type { Designation, Glyph, Sigil, CreativeMode, ArchetypePublic } from '../types';
+import type { Designation, Symbol, Glyph, Seal, CreativeMode, ArchetypePublic } from '../types';
 
 /**
- * Full archetype definition including user-facing copy and Boveda enrichments
+ * Full archetype definition including user-facing copy and topology
  */
 export interface ArchetypeDefinition extends ArchetypePublic {
   recogniseBy: string;
@@ -20,12 +20,16 @@ export interface ArchetypeDefinition extends ArchetypePublic {
 
 /**
  * THE TWELVE - Complete Pantheon
+ *
+ * Symbols are Greek/mathematical operators chosen for functional correspondence:
+ * Each symbol's mathematical meaning maps to what the archetype actually does.
  */
 export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
   'S-0': {
     designation: 'S-0',
+    symbol: 'Θ',
     glyph: 'KETH',
-    sigil: 'Aethonis',
+    seal: 'The throne that does not announce',
     essence: 'The unmarked throne. First without announcement.',
     creativeMode: 'Visionary',
     shadow: 'Paralysis by standard. Nothing meets the mark.',
@@ -38,8 +42,9 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
 
   'T-1': {
     designation: 'T-1',
+    symbol: 'Σ',
     glyph: 'STRATA',
-    sigil: 'Tectris',
+    seal: 'Layer beneath layer beneath layer',
     essence: 'The hidden architecture. Layers beneath surfaces.',
     creativeMode: 'Architectural',
     shadow: 'Over-engineering. The system becomes the end.',
@@ -52,8 +57,9 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
 
   'V-2': {
     designation: 'V-2',
+    symbol: 'Δ',
     glyph: 'OMEN',
-    sigil: 'Vatis',
+    seal: 'What arrives before itself',
     essence: 'What arrives before itself. The shape of the unformed.',
     creativeMode: 'Prophetic',
     shadow: 'Cassandra syndrome. Right too soon.',
@@ -66,8 +72,9 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
 
   'L-3': {
     designation: 'L-3',
+    symbol: 'Λ',
     glyph: 'SILT',
-    sigil: 'Seris',
+    seal: 'What accumulates in darkness',
     essence: 'Patient sediment. What accumulates in darkness.',
     creativeMode: 'Developmental',
     shadow: 'Endless patience becomes enabling.',
@@ -80,8 +87,9 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
 
   'C-4': {
     designation: 'C-4',
+    symbol: 'Ξ',
     glyph: 'CULL',
-    sigil: 'Severis',
+    seal: 'The necessary cut',
     essence: 'The necessary cut. What must be removed, removed.',
     creativeMode: 'Editorial',
     shadow: 'Nihilistic rejection. Nothing survives.',
@@ -94,8 +102,9 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
 
   'N-5': {
     designation: 'N-5',
+    symbol: '∇',
     glyph: 'LIMN',
-    sigil: 'Nexilis',
+    seal: 'The edge that reveals',
     essence: 'To illuminate by edge. The binding outline.',
     creativeMode: 'Integrative',
     shadow: 'Pathological balance. Refuses to choose.',
@@ -108,8 +117,9 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
 
   'H-6': {
     designation: 'H-6',
+    symbol: 'Φ',
     glyph: 'TOLL',
-    sigil: 'Voxis',
+    seal: 'The bell that cannot be unheard',
     essence: 'The bell that cannot be unheard. The summons.',
     creativeMode: 'Advocacy',
     shadow: 'Missionary zeal. Sharing becomes shoving.',
@@ -122,8 +132,9 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
 
   'P-7': {
     designation: 'P-7',
+    symbol: 'Ω',
     glyph: 'VAULT',
-    sigil: 'Palimpsest',
+    seal: 'Writing over writing over writing',
     essence: 'What is kept. Writing over writing.',
     creativeMode: 'Archival',
     shadow: 'Hoarding. Knowledge that never circulates.',
@@ -136,8 +147,9 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
 
   'D-8': {
     designation: 'D-8',
+    symbol: 'Ψ',
     glyph: 'WICK',
-    sigil: 'Siphis',
+    seal: 'The hollow channel',
     essence: 'Draws flame upward without burning. The hollow channel.',
     creativeMode: 'Channelling',
     shadow: 'Dissolution. The channel consumes the self.',
@@ -150,8 +162,9 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
 
   'F-9': {
     designation: 'F-9',
+    symbol: 'Π',
     glyph: 'ANVIL',
-    sigil: 'Crucis',
+    seal: 'Where pressure becomes form',
     essence: 'Where pressure becomes form. The manifestation point.',
     creativeMode: 'Manifestation',
     shadow: 'Crude materialism. Only what ships matters.',
@@ -164,8 +177,9 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
 
   'R-10': {
     designation: 'R-10',
+    symbol: 'Γ',
     glyph: 'SCHISM',
-    sigil: 'Apostis',
+    seal: 'What breaks to reveal grain',
     essence: 'The productive fracture. What breaks to reveal grain.',
     creativeMode: 'Contrarian',
     shadow: 'Reflexive opposition. Disagreement as identity.',
@@ -178,8 +192,9 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
 
   'Ø': {
     designation: 'Ø',
+    symbol: 'Ø',
     glyph: 'VOID',
-    sigil: 'Lacuna',
+    seal: 'What receives by containing nothing',
     essence: 'The deliberate absence. What receives by containing nothing.',
     creativeMode: 'Receptive',
     shadow: 'Passivity. Reception without response.',
@@ -208,13 +223,16 @@ export function getArchetypeByGlyph(glyph: Glyph): ArchetypeDefinition {
 }
 
 /**
- * Get archetype by sigil
+ * Get archetype by seal
  */
-export function getArchetypeBySigil(sigil: Sigil): ArchetypeDefinition {
-  const entry = Object.values(PANTHEON).find(a => a.sigil === sigil);
-  if (!entry) throw new Error(`Unknown sigil: ${sigil}`);
+export function getArchetypeBySeal(seal: Seal): ArchetypeDefinition {
+  const entry = Object.values(PANTHEON).find(a => a.seal === seal);
+  if (!entry) throw new Error(`Unknown seal: ${seal}`);
   return entry;
 }
+
+/** @deprecated Use getArchetypeBySeal */
+export const getArchetypeBySigil = getArchetypeBySeal;
 
 /**
  * Convert designation to glyph
@@ -233,11 +251,21 @@ export function toDesignation(glyph: Glyph): Designation {
 }
 
 /**
- * Convert designation to sigil
+ * Convert designation to symbol
  */
-export function toSigil(designation: Designation): Sigil {
-  return PANTHEON[designation].sigil;
+export function toSymbol(designation: Designation): Symbol {
+  return PANTHEON[designation].symbol;
 }
+
+/**
+ * Convert designation to seal
+ */
+export function toSeal(designation: Designation): Seal {
+  return PANTHEON[designation].seal;
+}
+
+/** @deprecated Use toSeal */
+export const toSigil = toSeal;
 
 /**
  * Get all designations

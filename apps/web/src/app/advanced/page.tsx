@@ -189,7 +189,7 @@ export default function AdvancedPage() {
                   <p className="text-bone text-2xl font-display">
                     {titleCase(archetype.glyph)}
                   </p>
-                  <p className="text-bone-muted text-sm">{archetype.sigil}</p>
+                  <p className="text-bone-muted text-sm">{archetype.seal}</p>
                 </div>
 
                 <div className="flex gap-6 pt-3">
