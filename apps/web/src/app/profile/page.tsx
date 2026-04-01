@@ -512,19 +512,19 @@ export default function ProfilePage() {
           >
             <div className="archetype-card text-center">
               <p className="text-xs capitalize tracking-wider text-bone-faint mb-2">
-                Calibration Available
+                Next attunement available
               </p>
               <p className="text-bone-muted text-sm mb-4">
                 {nextCalibrationStage === 'music'
-                  ? 'Refine your profile with music-specific questions.'
-                  : 'Unlock your full taste genome with deep calibration.'}
+                  ? 'Sharpen your classification with sonic preference mapping.'
+                  : 'Deepen your genome with cross-domain attunement.'}
               </p>
               <button
                 type="button"
                 className="btn btn-secondary"
                 onClick={() => router.push(`/calibrate?stage=${nextCalibrationStage}`)}
               >
-                {nextCalibrationStage === 'music' ? 'Music Calibration' : 'Deep Calibration'}
+                {nextCalibrationStage === 'music' ? 'Sonic Attunement' : 'Deep Attunement'}
               </button>
             </div>
           </motion.div>
