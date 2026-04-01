@@ -43,10 +43,21 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showBreakdown, setShowBreakdown] = useState(false);
+  const [oriCallback, setOriCallback] = useState<string | null>(null);
 
   const userId = typeof window !== 'undefined'
     ? (isDebugMode ? debugUserId : localStorage.getItem('subtaste_user_id'))
     : null;
+
+  // Check for Ori/Nommo callback URL (stored by quiz page)
+  useEffect(() => {
+    try {
+      const cb = sessionStorage.getItem('subtaste_callback');
+      if (cb) setOriCallback(cb);
+    } catch {
+      // sessionStorage not available
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -171,7 +182,190 @@ export default function ProfilePage() {
           onSigilReveal={handleSigilReveal}
         />
 
-        {/* Archetype Breakdown */}
+        {/* Genome Analysis */}
+        {genome.distribution && (() => {
+          const sorted = Object.entries(genome.distribution)
+            .sort(([, a], [, b]) => b - a);
+          const dominantDesignation = sorted[0]?.[0] as Designation;
+          const subdominantDesignation = sorted[1]?.[0] as Designation;
+          const dominant = PANTHEON[dominantDesignation];
+          const subdominant = PANTHEON[subdominantDesignation];
+
+          // Shadow = the archetype you collapse toward under stress (designed relationship)
+          const shadowDesignation = dominant.stressTarget as Designation;
+          const shadow = PANTHEON[shadowDesignation];
+
+          return (
+            <motion.div
+              className="container-sm px-4 pb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.0 }}
+            >
+              <div className="space-y-4">
+                {/* Profile Strength Context */}
+                {progress && progress.signalCount < 80 && (
+                  <div className="px-4 py-3 rounded border border-border-subtle/50 bg-void-lighter/20">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs text-bone-faint tracking-wider">Profile Forming</p>
+                      <p className="text-xs text-bone-faint font-mono">{progress.signalCount} signals</p>
+                    </div>
+                    <div className="h-1 bg-void-lighter rounded-full overflow-hidden mb-2">
+                      <div
+                        className="h-full bg-bone-faint/40 transition-all"
+                        style={{ width: `${Math.min((progress.signalCount / 80) * 100, 100)}%` }}
+                      />
+                    </div>
+                    <p className="text-bone-faint text-[10px] leading-relaxed">
+                      Classification sharpens with more data. Run additional attunement sessions to increase separation between archetypes.
+                    </p>
+                  </div>
+                )}
+
+                {/* Dominant */}
+                <div className="archetype-card">
+                  <p className="text-xs capitalize tracking-wider text-bone-faint mb-6">Dominant</p>
+
+                  {/* Classification Header */}
+                  <div className="text-center mb-6">
+                    <h3 className="font-display text-3xl text-bone mb-2">{dominant.glyph}</h3>
+                    <p className="text-bone-faint font-mono text-sm tracking-wider mb-1">{dominantDesignation}</p>
+                    <p className="text-bone-muted text-sm italic">{dominant.creativeMode}</p>
+                    <p className="text-bone-faint/40 text-xs font-mono mt-2">
+                      {((sorted[0]?.[1] ?? 0) * 100).toFixed(1)}%
+                    </p>
+                  </div>
+
+                  {/* Body */}
+                  <div className="pt-5 border-t border-border-subtle/50 space-y-3">
+                    <p className="text-bone-muted text-sm leading-relaxed">{dominant.essence}</p>
+                    <p className="text-bone-faint text-xs leading-relaxed">
+                      Your primary mode of creative taste. This archetype shapes how you instinctively
+                      select, curate, and judge creative work.
+                    </p>
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-border-subtle/50">
+                    <p className="text-xs text-bone-faint">
+                      <span className="capitalize tracking-wider">Recognised by:</span>{' '}
+                      <span className="text-bone-muted">{dominant.recogniseBy}</span>
+                    </p>
+                  </div>
+
+                  {/* Growth & Stress Directions */}
+                  {(dominant.growthTarget || dominant.stressTarget) && (
+                    <div className="mt-3 pt-3 border-t border-border-subtle flex gap-6">
+                      {dominant.growthTarget && (() => {
+                        const growth = PANTHEON[dominant.growthTarget!];
+                        return (
+                          <div className="flex-1">
+                            <p className="text-[10px] tracking-wider text-bone-faint/50 mb-1">Growth Direction</p>
+                            <p className="text-bone-muted text-xs">
+                              {growth.glyph} <span className="font-mono text-bone-faint">{dominant.growthTarget}</span>
+                            </p>
+                            <p className="text-bone-faint text-[10px] mt-0.5 leading-relaxed">
+                              Lean into {growth.creativeMode.toLowerCase()} thinking to evolve.
+                            </p>
+                          </div>
+                        );
+                      })()}
+                      {dominant.stressTarget && dominant.stressTarget !== 'Ø' && (() => {
+                        const stress = PANTHEON[dominant.stressTarget!];
+                        return (
+                          <div className="flex-1">
+                            <p className="text-[10px] tracking-wider text-bone-faint/50 mb-1">Under Stress</p>
+                            <p className="text-bone-muted/60 text-xs">
+                              {stress.glyph} <span className="font-mono text-bone-faint">{dominant.stressTarget}</span>
+                            </p>
+                            <p className="text-bone-faint text-[10px] mt-0.5 leading-relaxed">
+                              May collapse into {stress.creativeMode.toLowerCase()} patterns.
+                            </p>
+                          </div>
+                        );
+                      })()}
+                      {dominant.stressTarget === 'Ø' && (
+                        <div className="flex-1">
+                          <p className="text-[10px] tracking-wider text-bone-faint/50 mb-1">Under Stress</p>
+                          <p className="text-bone-muted/60 text-xs">
+                            {PANTHEON['Ø'].glyph} <span className="font-mono text-bone-faint">Ø</span>
+                          </p>
+                          <p className="text-bone-faint text-[10px] mt-0.5 leading-relaxed">
+                            May withdraw into receptive silence.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Subdominant */}
+                <div className="archetype-card opacity-80">
+                  <p className="text-xs capitalize tracking-wider text-bone-faint mb-6">Subdominant</p>
+
+                  {/* Classification Header */}
+                  <div className="text-center mb-6">
+                    <h3 className="font-display text-2xl text-bone-muted mb-2">{subdominant.glyph}</h3>
+                    <p className="text-bone-faint font-mono text-sm tracking-wider mb-1">{subdominantDesignation}</p>
+                    <p className="text-bone-faint text-sm italic">{subdominant.creativeMode}</p>
+                    <p className="text-bone-faint/40 text-xs font-mono mt-2">
+                      {((sorted[1]?.[1] ?? 0) * 100).toFixed(1)}%
+                    </p>
+                  </div>
+
+                  {/* Body */}
+                  <div className="pt-5 border-t border-border-subtle/50 space-y-3">
+                    <p className="text-bone-faint text-sm leading-relaxed">{subdominant.essence}</p>
+                    <p className="text-bone-faint text-xs leading-relaxed">
+                      This modulates how your primary archetype expresses. It colours your decisions
+                      when the dominant mode has no strong preference.
+                    </p>
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-border-subtle/50">
+                    <p className="text-xs text-bone-faint">
+                      <span className="capitalize tracking-wider">Recognised by:</span>{' '}
+                      <span className="text-bone-muted/70">{subdominant.recogniseBy}</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Shadow */}
+                <div className="archetype-card opacity-60">
+                  <p className="text-xs capitalize tracking-wider text-bone-faint mb-6">Shadow</p>
+
+                  {/* Classification Header */}
+                  <div className="text-center mb-6">
+                    <h3 className="font-display text-2xl text-bone-faint mb-2">{shadow.glyph}</h3>
+                    <p className="text-bone-faint/60 font-mono text-sm tracking-wider mb-1">{shadowDesignation}</p>
+                    <p className="text-bone-faint text-sm italic">{shadow.creativeMode}</p>
+                    <p className="text-bone-faint/40 text-xs font-mono mt-2">
+                      {((genome.distribution?.[shadowDesignation] ?? 0) * 100).toFixed(1)}%
+                    </p>
+                  </div>
+
+                  {/* Body */}
+                  <div className="pt-5 border-t border-border-subtle/50 space-y-3">
+                    <p className="text-bone-faint text-sm leading-relaxed">{shadow.essence}</p>
+                    <p className="text-bone-faint text-xs leading-relaxed">
+                      Under pressure, your dominant archetype collapses toward {shadow.glyph}.
+                      {shadowDesignation === 'Ø'
+                        ? ' This manifests as withdrawal into receptive silence, disengaging from active curation.'
+                        : ` This manifests as over-relying on ${shadow.creativeMode.toLowerCase()} patterns at the expense of your natural strengths.`}
+                    </p>
+                    <p className="text-bone-faint text-xs leading-relaxed">
+                      Awareness of this tendency is the antidote. When you notice yourself defaulting to
+                      {shadowDesignation === 'Ø'
+                        ? ' passivity'
+                        : ` ${shadow.creativeMode.toLowerCase()} reflexes`}, pause and re-engage your dominant mode.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })()}
+
+        {/* Formal Classification (Detailed Distribution) */}
         {genome.distribution && (
           <motion.div
             className="container-sm px-4 pb-8"
@@ -187,7 +381,7 @@ export default function ProfilePage() {
               >
                 <div>
                   <h3 className="text-sm font-display tracking-wider text-bone mb-1">
-                    FORMAL CLASSIFICATION
+                    Formal Classification
                   </h3>
                   <p className="text-xs text-bone-faint">
                     View detailed archetype breakdown
@@ -211,41 +405,12 @@ export default function ProfilePage() {
                   transition={{ duration: 0.3 }}
                   className="mt-6 pt-6 border-t border-border-subtle space-y-6"
                 >
-                  {/* Primary & Secondary Summary */}
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-xs uppercase tracking-wider text-bone-faint mb-2">Primary Archetype</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-bone font-mono">{genome.glyph} {genome.designation}</span>
-                        <span className="text-bone-muted text-sm">
-                          {(genome.confidence * 100).toFixed(1)}%
-                        </span>
-                      </div>
-                      <p className="text-xs text-bone-faint mt-1 italic">{genome.creativeMode}</p>
-                    </div>
-
-                    {genome.secondary && (
-                      <div>
-                        <p className="text-xs uppercase tracking-wider text-bone-faint mb-2">Secondary Archetype</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-bone-muted font-mono">{genome.secondary.glyph} {genome.secondary.designation}</span>
-                          <span className="text-bone-muted text-sm">
-                            {(genome.secondary.confidence * 100).toFixed(1)}%
-                          </span>
-                        </div>
-                        <p className="text-xs text-bone-faint mt-1 italic">
-                          {PANTHEON[genome.secondary.designation].creativeMode}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
                   {/* Full Distribution */}
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-bone-faint mb-3">
+                    <p className="text-xs capitalize tracking-wider text-bone-faint mb-4">
                       Complete Archetype Distribution
                     </p>
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                       {Object.entries(genome.distribution)
                         .sort(([, a], [, b]) => b - a)
                         .map(([designation, weight]) => {
@@ -255,29 +420,37 @@ export default function ProfilePage() {
                           const isSecondary = designation === genome.secondary?.designation;
 
                           return (
-                            <div key={designation} className="space-y-1">
-                              <div className="flex items-center justify-between">
-                                <span className={`text-xs font-mono ${
-                                  isPrimary ? 'text-bone' :
-                                  isSecondary ? 'text-bone-muted' :
-                                  'text-bone-faint'
-                                }`}>
-                                  {archetype.glyph} {designation}
-                                  {isPrimary && ' (Primary)'}
-                                  {isSecondary && ' (Secondary)'}
-                                </span>
-                                <span className="text-xs text-bone-faint">{percentage}%</span>
-                              </div>
-                              <div className="h-1 bg-void-lighter rounded-full overflow-hidden">
-                                <div
-                                  className={`h-full transition-all ${
-                                    isPrimary ? 'bg-bone' :
-                                    isSecondary ? 'bg-bone-muted' :
-                                    'bg-bone-faint'
-                                  }`}
-                                  style={{ width: `${percentage}%` }}
-                                />
-                              </div>
+                            <div
+                              key={designation}
+                              className={`rounded border px-3 py-3 text-center ${
+                                isPrimary
+                                  ? 'border-bone/30 bg-bone/5'
+                                  : isSecondary
+                                    ? 'border-bone-faint/20 bg-bone/[0.02]'
+                                    : 'border-border-subtle/50 bg-void-lighter/20'
+                              }`}
+                            >
+                              <p className={`font-display text-sm mb-0.5 ${
+                                isPrimary ? 'text-bone' : isSecondary ? 'text-bone-muted' : 'text-bone-faint'
+                              }`}>
+                                {archetype.glyph}
+                              </p>
+                              <p className={`font-mono text-[10px] tracking-wider mb-1.5 ${
+                                isPrimary ? 'text-bone-muted' : 'text-bone-faint/60'
+                              }`}>
+                                {designation}
+                              </p>
+                              <p className="text-bone-faint text-[10px] italic mb-2">
+                                {archetype.creativeMode}
+                              </p>
+                              <p className={`font-mono text-xs ${
+                                isPrimary ? 'text-bone' : isSecondary ? 'text-bone-muted' : 'text-bone-faint'
+                              }`}>
+                                {percentage}%
+                              </p>
+                              <p className="text-bone-faint/30 text-[8px] tracking-wider mt-0.5">
+                                AFFINITY
+                              </p>
                             </div>
                           );
                         })}
@@ -310,7 +483,7 @@ export default function ProfilePage() {
             transition={{ delay: 1.5 }}
           >
             <div className="archetype-card text-center">
-              <p className="text-xs uppercase tracking-wider text-bone-faint mb-2">
+              <p className="text-xs capitalize tracking-wider text-bone-faint mb-2">
                 Calibration Available
               </p>
               <p className="text-bone-muted text-sm mb-4">
@@ -358,7 +531,7 @@ export default function ProfilePage() {
                 className="btn btn-secondary"
                 onClick={() => router.push('/training')}
               >
-                Training
+                Attunement
               </button>
               <button
                 type="button"
@@ -368,6 +541,28 @@ export default function ProfilePage() {
                 Axes Calibration
               </button>
             </div>
+
+            {/* Return to Ori (if launched from Nommo) */}
+            {oriCallback && userId && (
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    try {
+                      const url = new URL(decodeURIComponent(oriCallback));
+                      url.searchParams.set('subtaste_user_id', userId);
+                      sessionStorage.removeItem('subtaste_callback');
+                      window.location.href = url.toString();
+                    } catch {
+                      router.push('/');
+                    }
+                  }}
+                >
+                  Return to Ori
+                </button>
+              </div>
+            )}
 
             {/* Secondary Actions */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

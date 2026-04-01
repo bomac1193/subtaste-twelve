@@ -56,7 +56,7 @@ export function AxesSlider({
       {/* Prompt */}
       <div className="text-center space-y-2">
         <h3 className="text-bone text-sm font-medium">{prompt}</h3>
-        <p className="text-bone-faint text-xs uppercase tracking-wider">
+        <p className="text-bone-faint text-xs capitalize tracking-wider">
           {axis.replace(/([A-Z])/g, ' $1').trim()}
         </p>
       </div>

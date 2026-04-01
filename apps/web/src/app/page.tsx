@@ -178,7 +178,7 @@ export default function HomePage() {
                     onClick={() => router.push('/training')}
                     className="text-bone-faint/40 text-[10px] tracking-[0.2em] uppercase hover:text-bone-faint/70 transition-colors duration-500"
                   >
-                    Training
+                    Attunement
                   </button>
                   <button
                     type="button"
@@ -270,11 +270,11 @@ export default function HomePage() {
                     <div className="flex gap-6 pt-3 border-t border-bone-faint/5">
                       <div>
                         <p className="text-bone-faint/20 text-[9px] tracking-[0.1em] mb-1">Phase</p>
-                        <p className="text-bone-faint/45 text-[11px] leading-none capitalize">{selectedArchetype.phase || '—'}</p>
+                        <p className="text-bone-faint/45 text-[11px] leading-none capitalize">{selectedArchetype.phase || '-'}</p>
                       </div>
                       <div>
                         <p className="text-bone-faint/20 text-[9px] tracking-[0.1em] mb-1">Element</p>
-                        <p className="text-bone-faint/45 text-[11px] leading-none capitalize">{selectedArchetype.wuXingElement || '—'}</p>
+                        <p className="text-bone-faint/45 text-[11px] leading-none capitalize">{selectedArchetype.wuXingElement || '-'}</p>
                       </div>
                       {selectedArchetype.growthTarget && (
                         <div onClick={() => handleSelect(selectedArchetype.growthTarget!)} className="cursor-pointer">

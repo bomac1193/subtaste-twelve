@@ -17,6 +17,10 @@ interface TrainingCardProps {
   };
   onSubmit: (bestId: string, worstId: string) => void;
   disabled?: boolean;
+  initialBestId?: string;
+  initialWorstId?: string;
+  showBack?: boolean;
+  onBack?: () => void;
 }
 
 type SelectionMode = 'best' | 'worst' | null;
@@ -31,15 +35,21 @@ export function TrainingCard({
   card,
   onSubmit,
   disabled = false,
+  initialBestId,
+  initialWorstId,
+  showBack = false,
+  onBack,
 }: TrainingCardProps) {
-  const [bestId, setBestId] = useState<string | null>(null);
-  const [worstId, setWorstId] = useState<string | null>(null);
-  const [mode, setMode] = useState<SelectionMode>('best');
+  const [bestId, setBestId] = useState<string | null>(initialBestId ?? null);
+  const [worstId, setWorstId] = useState<string | null>(initialWorstId ?? null);
+  const [mode, setMode] = useState<SelectionMode>(
+    initialBestId && initialWorstId ? null : initialBestId ? 'worst' : 'best'
+  );
 
   const handleOptionClick = (optionId: string) => {
     if (disabled) return;
 
-    // If this option is already selected as best or worst, deselect it
+    // Deselect if already selected
     if (optionId === bestId) {
       setBestId(null);
       setMode('best');
@@ -47,15 +57,16 @@ export function TrainingCard({
     }
     if (optionId === worstId) {
       setWorstId(null);
-      setMode('worst');
+      // If best is already set, re-select worst; otherwise select best first
+      setMode(bestId ? 'worst' : 'best');
       return;
     }
 
     // Select based on current mode
-    if (mode === 'best' && optionId !== worstId) {
+    if (mode === 'best') {
       setBestId(optionId);
-      setMode('worst'); // Auto-switch to worst selection
-    } else if (mode === 'worst' && optionId !== bestId) {
+      setMode('worst');
+    } else if (mode === 'worst') {
       setWorstId(optionId);
     }
   };
@@ -72,7 +83,7 @@ export function TrainingCard({
     <div className="space-y-6">
       {/* Topic Header */}
       <div className="text-center space-y-2">
-        <p className="text-bone-muted text-sm uppercase tracking-wider">
+        <p className="text-bone-muted text-sm capitalize tracking-wider">
           {card.topic.replace(/-/g, ' ')}
         </p>
         <div className="flex items-center justify-center gap-4 text-xs text-bone-faint">
@@ -128,8 +139,8 @@ export function TrainingCard({
                   <motion.div
                     className={cn(
                       'absolute -top-2 -right-2 px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider',
-                      isBest && 'bg-state-success text-black',
-                      isWorst && 'bg-state-warning text-black'
+                      isBest && 'bg-void border border-green-500 text-green-400',
+                      isWorst && 'bg-void border border-bone/60 text-bone'
                     )}
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -154,8 +165,20 @@ export function TrainingCard({
         })}
       </div>
 
-      {/* Submit Button */}
-      <div className="flex justify-center pt-4">
+      {/* Navigation */}
+      <div className="flex items-center justify-center gap-4 pt-4">
+        {showBack && onBack && (
+          <motion.button
+            type="button"
+            className="btn btn-secondary text-bone-faint text-sm"
+            onClick={onBack}
+            disabled={disabled}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            Back
+          </motion.button>
+        )}
         <motion.button
           type="button"
           className={cn(

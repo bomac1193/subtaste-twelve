@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   TRAINING_PROMPTS,
   generateTrainingSignals,
+  generateRevisionSignals,
   calculateTrainingXP,
   type TrainingCard,
   type TrainingSubmission
@@ -27,7 +28,10 @@ export async function POST(request: NextRequest) {
       bestId,
       worstId,
       topic,
-      completedTopics = []
+      completedTopics = [],
+      isRevision = false,
+      originalBestId,
+      originalWorstId
     } = body;
 
     if (!userId) {
@@ -64,23 +68,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create minimal card structure for signal generation
+    // For revisions, also look up original prompts
+    const origBestPrompt = isRevision ? TRAINING_PROMPTS.find(p => p.id === originalBestId) : null;
+    const origWorstPrompt = isRevision ? TRAINING_PROMPTS.find(p => p.id === originalWorstId) : null;
+
+    if (isRevision && (!origBestPrompt || !origWorstPrompt)) {
+      return NextResponse.json(
+        { error: 'Invalid original option IDs for revision' },
+        { status: 400 }
+      );
+    }
+
+    // Build card with all options needed for signal generation
+    const optionIds = new Set([bestId, worstId, originalBestId, originalWorstId].filter(Boolean));
+    const cardOptions = [...optionIds].map(id => {
+      const prompt = TRAINING_PROMPTS.find(p => p.id === id)!;
+      return { id: prompt.id, text: prompt.prompt, archetypeHint: prompt.archetypeHint };
+    });
+
     const card: TrainingCard = {
       id: cardId,
       topic: topic || bestPrompt.topic,
       prompt: '',
-      options: [
-        {
-          id: bestId,
-          text: bestPrompt.prompt,
-          archetypeHint: bestPrompt.archetypeHint
-        },
-        {
-          id: worstId,
-          text: worstPrompt.prompt,
-          archetypeHint: worstPrompt.archetypeHint
-        }
-      ]
+      options: cardOptions
     };
 
     const submission: TrainingSubmission = {
@@ -89,8 +99,13 @@ export async function POST(request: NextRequest) {
       worstId
     };
 
-    // Generate signals from the submission
-    const trainingSignals = generateTrainingSignals(card, submission);
+    // Generate signals — revision produces 4 (2 cancel + 2 new), normal produces 2
+    const trainingSignals = isRevision
+      ? generateRevisionSignals(card, submission, {
+          bestId: originalBestId,
+          worstId: originalWorstId
+        })
+      : generateTrainingSignals(card, submission);
 
     // Convert to Signal format with timestamps
     const signals: Signal[] = trainingSignals.map(sig => ({
@@ -107,24 +122,18 @@ export async function POST(request: NextRequest) {
     console.log('[Training] Updated genome confidence:', updatedGenome.behaviour?.confidence);
     console.log('[Training] Primary archetype confidence:', updatedGenome.archetype?.primary?.confidence);
 
-    // Extract and update keywords from both best and worst text
+    // Extract and update keywords
     let currentKeywords = updatedGenome.keywords || { visual: {}, content: {} };
 
-    // Best option - positive keywords
-    currentKeywords = updateKeywordScores(
-      currentKeywords,
-      bestPrompt.prompt,
-      1.6, // Same weight as training signal
-      'positive'
-    );
+    if (isRevision && origBestPrompt && origWorstPrompt) {
+      // Cancel original keywords (inverse polarity, half weight)
+      currentKeywords = updateKeywordScores(currentKeywords, origBestPrompt.prompt, 0.8, 'negative');
+      currentKeywords = updateKeywordScores(currentKeywords, origWorstPrompt.prompt, 0.8, 'positive');
+    }
 
-    // Worst option - negative keywords
-    currentKeywords = updateKeywordScores(
-      currentKeywords,
-      worstPrompt.prompt,
-      1.6,
-      'negative'
-    );
+    // New keywords at full weight
+    currentKeywords = updateKeywordScores(currentKeywords, bestPrompt.prompt, 1.6, 'positive');
+    currentKeywords = updateKeywordScores(currentKeywords, worstPrompt.prompt, 1.6, 'negative');
 
     updatedGenome.keywords = currentKeywords;
 
@@ -158,7 +167,9 @@ export async function POST(request: NextRequest) {
       keywordsExtracted: {
         visual: Object.keys(currentKeywords.visual).length,
         content: Object.keys(currentKeywords.content).length
-      }
+      },
+      isRevision,
+      signalsApplied: trainingSignals.length
     });
   } catch (error) {
     console.error('Training submission error:', error);

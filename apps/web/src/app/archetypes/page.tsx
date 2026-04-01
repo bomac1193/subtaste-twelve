@@ -183,7 +183,7 @@ export default function ArchetypesPage() {
 
                   {/* Recognition */}
                   <div className="mb-6">
-                    <p className="text-xs uppercase tracking-wider text-bone-faint mb-2">
+                    <p className="text-xs capitalize tracking-wider text-bone-faint mb-2">
                       Recognise By
                     </p>
                     <p className="text-bone-muted text-sm leading-relaxed">
@@ -193,7 +193,7 @@ export default function ArchetypesPage() {
 
                   {/* Shadow */}
                   <div className="mb-6">
-                    <p className="text-xs uppercase tracking-wider text-bone-faint mb-2">
+                    <p className="text-xs capitalize tracking-wider text-bone-faint mb-2">
                       Shadow
                     </p>
                     <p className="text-bone-muted/70 text-sm leading-relaxed">
@@ -205,19 +205,19 @@ export default function ArchetypesPage() {
                   <div className="flex gap-6 pt-5 border-t border-border-subtle/50">
                     <div>
                       <p className="text-bone-faint/50 text-[10px] tracking-wider mb-1">Phase</p>
-                      <p className="text-bone-muted text-xs leading-none capitalize">{selected.phase || '—'}</p>
+                      <p className="text-bone-muted text-xs leading-none capitalize">{selected.phase || '-'}</p>
                     </div>
                     <div>
                       <p className="text-bone-faint/50 text-[10px] tracking-wider mb-1">Element</p>
-                      <p className="text-bone-muted text-xs leading-none capitalize">{selected.wuXingElement || '—'}</p>
+                      <p className="text-bone-muted text-xs leading-none capitalize">{selected.wuXingElement || '-'}</p>
                     </div>
                     <div className={selected.growthTarget ? 'cursor-pointer' : ''} onClick={() => selected.growthTarget && setSelectedArchetype(selected.growthTarget!)}>
                       <p className="text-bone-faint/50 text-[10px] tracking-wider mb-1">Growth</p>
-                      <p className="text-bone-muted text-xs leading-none">{selected.growthTarget ? PANTHEON[selected.growthTarget]?.glyph ?? selected.growthTarget : '—'}</p>
+                      <p className="text-bone-muted text-xs leading-none">{selected.growthTarget ? PANTHEON[selected.growthTarget]?.glyph ?? selected.growthTarget : '-'}</p>
                     </div>
                     <div className={selected.stressTarget && selected.stressTarget !== 'Ø' ? 'cursor-pointer' : ''} onClick={() => selected.stressTarget && selected.stressTarget !== 'Ø' && setSelectedArchetype(selected.stressTarget!)}>
                       <p className="text-bone-faint/50 text-[10px] tracking-wider mb-1">Stress</p>
-                      <p className="text-bone-muted text-xs leading-none">{selected.stressTarget && selected.stressTarget !== 'Ø' ? PANTHEON[selected.stressTarget]?.glyph ?? selected.stressTarget : '—'}</p>
+                      <p className="text-bone-muted text-xs leading-none">{selected.stressTarget && selected.stressTarget !== 'Ø' ? PANTHEON[selected.stressTarget]?.glyph ?? selected.stressTarget : '-'}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -261,7 +261,7 @@ export default function ArchetypesPage() {
               className="btn btn-secondary"
               onClick={() => router.push('/training')}
             >
-              Start Training
+              Begin Attunement
             </button>
           </div>
           <button

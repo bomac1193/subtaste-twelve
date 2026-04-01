@@ -142,7 +142,7 @@ export function HexagramDisplay({
             compact ? 'text-[10px]' : 'text-xs'
           )}>
             {movingLines.length} moving line{movingLines.length > 1 ? 's' : ''}
-            {!compact && ' — transformation in progress'}
+            {!compact && ', transformation in progress'}
           </p>
         </div>
       )}

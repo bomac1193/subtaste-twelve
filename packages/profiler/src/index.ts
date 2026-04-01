@@ -136,6 +136,7 @@ export {
   generateTrainingCard,
   createTrainingSession,
   generateTrainingSignals,
+  generateRevisionSignals,
   calculateTrainingXP
 } from './instruments/training';
 

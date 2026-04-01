@@ -183,7 +183,7 @@ function CalibrationContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
             >
-              <p className="text-xs uppercase tracking-wider text-bone-faint mb-4">
+              <p className="text-xs capitalize tracking-wider text-bone-faint mb-4">
                 Stage {stage === 'music' ? '2' : '3'} of 3
               </p>
 

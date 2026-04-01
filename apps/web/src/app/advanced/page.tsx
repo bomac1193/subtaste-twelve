@@ -191,19 +191,19 @@ export default function AdvancedPage() {
                 <div className="flex gap-6 pt-3">
                   <div>
                     <p className="text-bone-faint text-[10px] tracking-wider mb-1">Phase</p>
-                    <p className="text-bone text-sm leading-none capitalize">{archetype.phase || '—'}</p>
+                    <p className="text-bone text-sm leading-none capitalize">{archetype.phase || '-'}</p>
                   </div>
                   <div>
                     <p className="text-bone-faint text-[10px] tracking-wider mb-1">Element</p>
-                    <p className="text-bone text-sm leading-none capitalize">{archetype.wuXingElement || '—'}</p>
+                    <p className="text-bone text-sm leading-none capitalize">{archetype.wuXingElement || '-'}</p>
                   </div>
                   <div>
                     <p className="text-bone-faint text-[10px] tracking-wider mb-1">Growth</p>
-                    <p className="text-bone-muted text-sm leading-none">{archetype.growthTarget ? PANTHEON[archetype.growthTarget]?.glyph || archetype.growthTarget : '—'}</p>
+                    <p className="text-bone-muted text-sm leading-none">{archetype.growthTarget ? PANTHEON[archetype.growthTarget]?.glyph || archetype.growthTarget : '-'}</p>
                   </div>
                   <div>
                     <p className="text-bone-faint text-[10px] tracking-wider mb-1">Stress</p>
-                    <p className="text-bone-muted text-sm leading-none">{archetype.stressTarget && archetype.stressTarget !== 'Ø' ? PANTHEON[archetype.stressTarget]?.glyph || archetype.stressTarget : '—'}</p>
+                    <p className="text-bone-muted text-sm leading-none">{archetype.stressTarget && archetype.stressTarget !== 'Ø' ? PANTHEON[archetype.stressTarget]?.glyph || archetype.stressTarget : '-'}</p>
                   </div>
                 </div>
               </div>

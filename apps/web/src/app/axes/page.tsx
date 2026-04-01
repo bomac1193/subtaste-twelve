@@ -320,7 +320,7 @@ export default function AxesPage() {
                 {hexagram.movingLines.length > 0 && (
                   <p className="text-bone-faint text-xs">
                     {hexagram.movingLines.length} moving line
-                    {hexagram.movingLines.length > 1 ? 's' : ''} detected —
+                    {hexagram.movingLines.length > 1 ? 's' : ''} detected,
                     transformation in progress
                   </p>
                 )}

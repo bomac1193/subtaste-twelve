@@ -52,7 +52,7 @@ export default function RootLayout({
         <DebugProvider>
           <SessionProvider>
             {children}
-            <DebugToggle />
+            {/* <DebugToggle /> */}
           </SessionProvider>
         </DebugProvider>
       </body>

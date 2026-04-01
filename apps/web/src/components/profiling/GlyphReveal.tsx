@@ -76,25 +76,31 @@ export function GlyphReveal({
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.7 }}
         >
-          <span className="text-xs uppercase tracking-wider text-bone-faint">
+          <span className="text-xs capitalize tracking-wider text-bone-faint">
             Creative Mode
           </span>
           <p className="text-bone-muted mt-1">{creativeMode}</p>
+          <p className="text-bone-faint text-xs mt-1">
+            How this archetype processes and curates creative work.
+          </p>
         </motion.div>
 
-        {/* Confidence */}
+        {/* Profile Strength */}
         <motion.div
           className="mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.9 }}
         >
-          <div className="flex items-center gap-3">
+          <span className="text-xs capitalize tracking-wider text-bone-faint">
+            Profile Strength
+          </span>
+          <div className="flex items-center gap-3 mt-2">
             <div className="flex-1 h-1 bg-void-subtle rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-bone-muted"
                 initial={{ width: 0 }}
-                animate={{ width: `${confidence * 100}%` }}
+                animate={{ width: `${Math.max(confidence * 100, 2)}%` }}
                 transition={{ duration: 1, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
@@ -102,6 +108,11 @@ export function GlyphReveal({
               {Math.round(confidence * 100)}%
             </span>
           </div>
+          {confidence < 0.3 && (
+            <p className="text-bone-faint text-xs mt-2">
+              Still forming. More attunement sessions will sharpen your classification.
+            </p>
+          )}
         </motion.div>
 
         {/* Secondary (if present) */}
@@ -112,7 +123,7 @@ export function GlyphReveal({
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.1 }}
           >
-            <span className="text-xs uppercase tracking-wider text-bone-faint">
+            <span className="text-xs capitalize tracking-wider text-bone-faint">
               Secondary influence
             </span>
             <p className="text-bone-muted mt-1">
@@ -153,7 +164,7 @@ export function GlyphReveal({
             >
               {/* Sigil */}
               <div>
-                <span className="text-xs uppercase tracking-wider text-bone-faint">
+                <span className="text-xs capitalize tracking-wider text-bone-faint">
                   Sigil
                 </span>
                 <p className="font-display text-xl text-rime-bright mt-1 tracking-wide">
@@ -163,7 +174,7 @@ export function GlyphReveal({
 
               {/* Recognise By */}
               <div>
-                <span className="text-xs uppercase tracking-wider text-bone-faint">
+                <span className="text-xs capitalize tracking-wider text-bone-faint">
                   Recognised by
                 </span>
                 <p className="text-bone-muted mt-1 text-sm leading-relaxed">
@@ -173,7 +184,7 @@ export function GlyphReveal({
 
               {/* Shadow */}
               <div>
-                <span className="text-xs uppercase tracking-wider text-bone-faint">
+                <span className="text-xs capitalize tracking-wider text-bone-faint">
                   Shadow
                 </span>
                 <p className="text-bone-muted mt-1 text-sm leading-relaxed">
