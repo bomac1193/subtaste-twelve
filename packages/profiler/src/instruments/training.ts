@@ -6,7 +6,16 @@
  */
 
 import type { Designation } from '@subtaste/core';
-import type { ExplicitSignal } from '@subtaste/core';
+// Training signals use a custom shape (not ExplicitSignal) because they carry
+// text, weight, and polarity metadata needed for keyword extraction and revision.
+export interface TrainingSignal {
+  type: string;
+  source: string;
+  text: string;
+  weight: number;
+  polarity: 'positive' | 'negative';
+  archetypeWeights: Record<string, number>;
+}
 
 // ============================================================================
 // TYPES
@@ -368,8 +377,8 @@ export function createTrainingSession(cardCount: number = 20): TrainingCard[] {
 export function generateTrainingSignals(
   card: TrainingCard,
   submission: TrainingSubmission
-): ExplicitSignal[] {
-  const signals: ExplicitSignal[] = [];
+): TrainingSignal[] {
+  const signals: TrainingSignal[] = [];
 
   const bestOption = card.options.find(o => o.id === submission.bestId);
   const worstOption = card.options.find(o => o.id === submission.worstId);
@@ -390,7 +399,7 @@ export function generateTrainingSignals(
     }
   });
 
-  // Worst signal - negative
+  // Worst signal - negative (subtracts from the rejected archetype)
   signals.push({
     type: 'explicit',
     source: 'training',
@@ -398,7 +407,7 @@ export function generateTrainingSignals(
     weight: 1.6,
     polarity: 'negative',
     archetypeWeights: {
-      [worstOption.archetypeHint]: 1
+      [worstOption.archetypeHint]: -3
     }
   });
 
@@ -417,8 +426,8 @@ export function generateRevisionSignals(
   card: TrainingCard,
   newSubmission: TrainingSubmission,
   originalSubmission: { bestId: string; worstId: string }
-): ExplicitSignal[] {
-  const signals: ExplicitSignal[] = [];
+): TrainingSignal[] {
+  const signals: TrainingSignal[] = [];
 
   const origBest = card.options.find(o => o.id === originalSubmission.bestId);
   const origWorst = card.options.find(o => o.id === originalSubmission.worstId);

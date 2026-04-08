@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    if (!(session?.user as any)?.id) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     // Store in database
     const apiKey = await prisma.apiKey.create({
       data: {
-        userId: session.user.id,
+        userId: (session!.user as any).id,
         key: hashedKey,
         name,
         permissions

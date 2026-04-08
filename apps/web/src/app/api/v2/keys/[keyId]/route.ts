@@ -17,7 +17,7 @@ export async function DELETE(
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    if (!(session?.user as any)?.id) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
@@ -37,7 +37,7 @@ export async function DELETE(
       );
     }
 
-    if (apiKey.userId !== session.user.id) {
+    if (apiKey.userId !== (session!.user as any).id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 403 }

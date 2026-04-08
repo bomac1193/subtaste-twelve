@@ -453,6 +453,57 @@ body {
 }
 
 /* ============================================================================
+   COMPONENT: RANKING QUESTION
+   ============================================================================ */
+
+.ranking__option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  background: var(--void-elevated);
+  border: var(--border-width-default) solid var(--border-default);
+  border-radius: var(--radius-md);
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.ranking__option:hover {
+  border-color: var(--border-strong);
+  background: var(--void-subtle);
+}
+
+.ranking__option--ranked {
+  border-color: var(--bone);
+  background: var(--void-subtle);
+}
+
+.ranking__rank {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--bone-faint);
+  width: 1.5rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.ranking__option--ranked .ranking__rank {
+  color: var(--bone);
+}
+
+.ranking__text {
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  color: var(--bone-muted);
+}
+
+.ranking__option--ranked .ranking__text {
+  color: var(--bone);
+}
+
+/* ============================================================================
    COMPONENT: SIGIL REVEAL LINK
    ============================================================================ */
 

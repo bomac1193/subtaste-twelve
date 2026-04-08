@@ -97,12 +97,12 @@ function CalibrationContent() {
     music: {
       name: 'Music Calibration',
       description: 'Refine your profile with music-specific preferences.',
-      duration: '~45 seconds',
+      duration: '45 seconds',
     },
     deep: {
       name: 'Deep Calibration',
       description: 'Unlock your full taste genome.',
-      duration: '~2 minutes',
+      duration: '2 minutes',
     },
   };
 
@@ -111,7 +111,7 @@ function CalibrationContent() {
   }, []);
 
   const handleComplete = useCallback(async (
-    responses: Array<{ questionId: string; response: number }>
+    responses: Array<{ questionId: string; response: number | number[] }>
   ) => {
     setState('processing');
     setError(null);
@@ -134,7 +134,7 @@ function CalibrationContent() {
       setResult({
         glyph: archetype.glyph,
         designation: data.designation,
-        sigil: archetype.sigil,
+        sigil: archetype.seal,
         essence: archetype.essence,
         creativeMode: archetype.creativeMode as CreativeMode,
         shadow: archetype.shadow,

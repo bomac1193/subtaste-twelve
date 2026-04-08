@@ -135,7 +135,7 @@ export default function AxesPage() {
                 Begin Calibration
               </button>
 
-              <p className="text-bone-faint text-xs mt-8">~1 minute</p>
+              <p className="text-bone-faint text-xs mt-8">1 minute</p>
             </motion.div>
           </motion.div>
         )}
@@ -172,7 +172,7 @@ export default function AxesPage() {
                     highDescription={question.highDescription}
                     value={values[question.axis]}
                     onChange={(value) => handleValueChange(question.axis, value)}
-                    disabled={state === 'processing'}
+                    disabled={(state as string) === 'processing'}
                   />
                 ))}
               </div>
@@ -201,7 +201,7 @@ export default function AxesPage() {
                       : 'btn-secondary opacity-40 cursor-not-allowed'
                   )}
                   onClick={handleSubmit}
-                  disabled={!allQuestionsAnswered || state === 'processing'}
+                  disabled={!allQuestionsAnswered || (state as string) === 'processing'}
                 >
                   Derive Hexagram
                 </button>

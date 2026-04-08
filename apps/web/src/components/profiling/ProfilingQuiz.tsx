@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BinaryChoice } from './BinaryChoice';
 import { LikertScale } from './LikertScale';
+import { RankingQuestion } from './RankingQuestion';
 import { ProgressIndicator } from './ProgressIndicator';
 import { QuestionPrompt } from './QuestionPrompt';
 import type { Glyph } from '@subtaste/core';
@@ -22,13 +23,14 @@ interface Question {
   scale?: 5 | 7;
   lowLabel?: string;
   highLabel?: string;
+  items?: string[]; // For ranking questions
 }
 
 interface ProfilingQuizProps {
   questions: Question[];
   stageName: string;
   stageDescription?: string;
-  onComplete: (responses: Array<{ questionId: string; response: number }>) => void;
+  onComplete: (responses: Array<{ questionId: string; response: number | number[] }>) => void;
   onCancel?: () => void;
 }
 
@@ -50,7 +52,7 @@ export function ProfilingQuiz({
   onCancel,
 }: ProfilingQuizProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [responses, setResponses] = useState<Array<{ questionId: string; response: number }>>([]);
+  const [responses, setResponses] = useState<Array<{ questionId: string; response: number | number[] }>>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [resumed, setResumed] = useState(false);
 
@@ -81,7 +83,7 @@ export function ProfilingQuiz({
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
 
-  const saveCheckpoint = useCallback((newResponses: Array<{ questionId: string; response: number }>, nextIndex: number) => {
+  const saveCheckpoint = useCallback((newResponses: Array<{ questionId: string; response: number | number[] }>, nextIndex: number) => {
     try {
       localStorage.setItem(CHECKPOINT_KEY, JSON.stringify({
         stageName,
@@ -94,7 +96,7 @@ export function ProfilingQuiz({
     }
   }, [stageName]);
 
-  const handleResponse = useCallback((response: number) => {
+  const handleResponse = useCallback((response: number | number[]) => {
     if (isTransitioning) return;
 
     const questionResponse = {
@@ -192,6 +194,14 @@ export function ProfilingQuiz({
               highLabel={currentQuestion.highLabel || 'Strongly agree'}
               selected={null}
               onSelect={(value) => handleResponse(value)}
+              disabled={isTransitioning}
+            />
+          )}
+
+          {currentQuestion.type === 'ranking' && currentQuestion.items && (
+            <RankingQuestion
+              items={currentQuestion.items}
+              onSelect={(ranking) => handleResponse(ranking)}
               disabled={isTransitioning}
             />
           )}

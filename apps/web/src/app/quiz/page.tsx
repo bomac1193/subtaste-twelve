@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useCallback, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProfilingQuiz } from '@/components/profiling/ProfilingQuiz';
 import { GlyphReveal } from '@/components/profiling/GlyphReveal';
@@ -9,7 +9,7 @@ import { useDebug } from '@/contexts/DebugContext';
 import {
   PANTHEON,
   type Glyph,
-  type Sigil,
+  type Seal,
   type CreativeMode,
   type Designation
 } from '@subtaste/core';
@@ -24,7 +24,7 @@ interface GenomeResult {
   userId: string;
   glyph: Glyph;
   designation: Designation;
-  sigil: Sigil;
+  seal: Seal;
   essence: string;
   creativeMode: CreativeMode;
   shadow: string;
@@ -36,12 +36,15 @@ interface GenomeResult {
   };
 }
 
-export default function QuizPage() {
+function QuizContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { isDebugMode, setDebugUserId } = useDebug();
   const [state, setState] = useState<QuizState>('intro');
   const [result, setResult] = useState<GenomeResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const callbackUrl = searchParams.get('callback');
 
   const questions = INITIAL_QUESTIONS.map((q: BinaryQuestion) => ({
     id: q.id,
@@ -55,16 +58,24 @@ export default function QuizPage() {
   }, []);
 
   const handleComplete = useCallback(async (
-    responses: Array<{ questionId: string; response: number }>
+    responses: Array<{ questionId: string; response: number | number[] }>
   ) => {
     setState('processing');
     setError(null);
 
     try {
+      // Pass existing userId if available so we don't create duplicates
+      const existingUserId = isDebugMode
+        ? localStorage.getItem('subtaste_debug_user_id')
+        : localStorage.getItem('subtaste_user_id');
+
       const response = await fetch('/api/v2/quiz', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ responses }),
+        body: JSON.stringify({
+          responses,
+          userId: existingUserId || undefined,
+        }),
       });
 
       const data = await response.json();
@@ -79,7 +90,7 @@ export default function QuizPage() {
         userId: data.userId,
         glyph: archetype.glyph,
         designation: data.designation,
-        sigil: archetype.sigil,
+        seal: archetype.seal,
         essence: archetype.essence,
         creativeMode: archetype.creativeMode as CreativeMode,
         shadow: archetype.shadow,
@@ -116,8 +127,17 @@ export default function QuizPage() {
   }, [result]);
 
   const handleContinue = useCallback(() => {
+    // Always go to profile first (training, calibration, breakdown)
+    // If launched from Ori/Nommo, store callback so profile can show "Return to Ori"
+    if (callbackUrl) {
+      try {
+        sessionStorage.setItem('subtaste_callback', callbackUrl);
+      } catch {
+        // sessionStorage not available
+      }
+    }
     router.push('/profile');
-  }, [router]);
+  }, [router, callbackUrl]);
 
   return (
     <div className={`min-h-screen bg-void ${isDebugMode ? 'pt-12' : ''}`}>
@@ -136,12 +156,12 @@ export default function QuizPage() {
               transition={{ delay: 0.2, duration: 0.8 }}
             >
               <h1 className="font-display text-3xl md:text-4xl text-bone mb-4">
-                The Twelve
+                Subtaste
               </h1>
               {isDebugMode && (
                 <div className="mb-3">
                   <span className="inline-block px-3 py-1 bg-state-warning/20 text-state-warning text-xs font-mono rounded-full border border-state-warning/40">
-                    🐛 Debug Mode - Creating Test Profile
+                    Debug Mode - Creating Test Profile
                   </span>
                 </div>
               )}
@@ -158,7 +178,7 @@ export default function QuizPage() {
                 {isDebugMode ? 'Begin Debug Quiz' : 'Begin'}
               </button>
 
-              <p className="text-bone-faint text-xs mt-8">~30 seconds</p>
+              <p className="text-bone-faint text-xs mt-8">30 seconds</p>
             </motion.div>
           </motion.div>
         )}
@@ -208,7 +228,7 @@ export default function QuizPage() {
           >
             <GlyphReveal
               glyph={result.glyph}
-              sigil={result.sigil}
+              sigil={result.seal}
               essence={result.essence}
               creativeMode={result.creativeMode}
               shadow={result.shadow}
@@ -222,5 +242,17 @@ export default function QuizPage() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function QuizPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-void flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-bone-faint border-t-bone rounded-full animate-spin" />
+      </div>
+    }>
+      <QuizContent />
+    </Suspense>
   );
 }

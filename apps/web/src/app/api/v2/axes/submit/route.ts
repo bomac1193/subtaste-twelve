@@ -60,11 +60,14 @@ export async function POST(request: NextRequest) {
     const updatedGenome = {
       ...user.genome,
       axes: normalizedAxes,
-      iching: hexagramReading
+      iching: {
+        ...hexagramReading,
+        transforming: hexagramReading.transforming || undefined,
+      }
     };
 
     // Store updated genome
-    await setUser(userId, { genome: updatedGenome });
+    await setUser(userId, { genome: updatedGenome }, 'axes');
     await completeStage(userId, 'axes');
 
     // Convert to public format for client

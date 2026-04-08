@@ -112,7 +112,11 @@ export async function POST(request: NextRequest) {
       type: 'explicit' as const,
       source: 'training' as const,
       timestamp: new Date(),
-      data: sig
+      data: {
+        kind: 'choice' as const,
+        value: sig.polarity === 'positive' ? 1 : 0,
+        archetypeWeights: sig.archetypeWeights,
+      }
     }));
 
     // Update genome with new signals
@@ -138,26 +142,23 @@ export async function POST(request: NextRequest) {
     updatedGenome.keywords = currentKeywords;
 
     // Calculate XP
-    const completedSet = new Set(completedTopics);
+    const completedSet = new Set<string>(completedTopics as string[]);
     const xp = calculateTrainingXP(completedSet, topic);
 
     // Update gamification
     const currentXP = updatedGenome.gamification?.xp || 0;
-    const currentTier = updatedGenome.gamification?.tier || 'novice';
+    const currentTier = (updatedGenome.gamification?.tier || 0) as number;
 
     updatedGenome.gamification = {
       xp: currentXP + xp,
-      tier: currentTier, // TODO: tier progression logic
+      tier: currentTier,
       achievements: updatedGenome.gamification?.achievements || [],
-      streak: {
-        current: updatedGenome.gamification?.streak?.current || 0,
-        longest: updatedGenome.gamification?.streak?.longest || 0,
-        lastActiveDate: new Date().toISOString()
-      }
+      streak: ((updatedGenome.gamification?.streak as number) || 0) + 1,
+      totalTrainings: ((updatedGenome.gamification as any)?.totalTrainings || 0) + 1,
     };
 
     // Store updated genome
-    await setUser(userId, { genome: updatedGenome });
+    await setUser(userId, { genome: updatedGenome }, 'training');
     await incrementSignals(userId, signals.length);
 
     return NextResponse.json({

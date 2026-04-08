@@ -30,7 +30,14 @@ export function generateGenomeId(): string {
 }
 
 /**
- * Create a new TasteGenome from classification results
+ * WARNING: createGenome() creates a BRAND NEW genome from scratch.
+ * It DESTROYS all existing data (signal history, keywords, gamification, etc.)
+ *
+ * ONLY use this for:
+ * - First-time users completing the initial quiz (no existing genome)
+ * - Never for calibration, attunements, or signal processing
+ *
+ * For updating an existing genome, use updateGenomeWithSignals() from encoder.ts
  */
 export function createGenome(params: {
   userId: string;

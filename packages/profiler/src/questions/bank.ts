@@ -139,61 +139,85 @@ export const INITIAL_QUESTIONS: BinaryQuestion[] = [
  * MUSIC CALIBRATION - 3 questions triggered after 5 interactions
  * ~45 seconds, refines MUSIC dimensions
  */
-export const MUSIC_CALIBRATION_QUESTIONS: LikertQuestion[] = [
+export const MUSIC_CALIBRATION_QUESTIONS: (BinaryQuestion | LikertQuestion)[] = [
   {
-    id: 'music-1-complexity',
-    type: 'likert',
-    prompt: 'I gravitate toward music that rewards close listening.',
+    id: 'music-1-discovery',
+    type: 'binary',
+    prompt: 'A track you loved just got 50 million streams. You feel...',
     category: 'music',
-    scale: 5,
-    lowLabel: 'Strongly disagree',
-    highLabel: 'Strongly agree',
-    archetypeWeights: {
-      // High agreement
-      'S-0': 0.6,    // KETH - visionary
-      'T-1': 0.7,    // STRATA - architectural
-      'P-7': 0.8,    // VAULT - archival
-      // Low agreement (negative weights applied to inverted score)
-      'F-9': -0.4,   // ANVIL - manifestation
-      'H-6': -0.2    // TOLL - advocacy
-    }
-  },
+    options: ['Validated, I knew it was good', 'Less interested, the magic fades'],
+    archetypeWeights: {},
+    optionWeights: [
+      // Validated — calibration weights are intentionally low (nudge, not replace)
+      {
+        'H-6': 0.3,    // TOLL - advocacy
+        'N-5': 0.2,    // LIMN - integrative
+        'F-9': 0.15,   // ANVIL - manifestation
+        'R-10': -0.2,  // SCHISM (opposite)
+        'V-2': -0.1    // OMEN (opposite)
+      },
+      // Less interested
+      {
+        'V-2': 0.3,    // OMEN - prophetic
+        'R-10': 0.25,  // SCHISM - contrarian
+        'S-0': 0.2,    // KETH - standard-setting
+        'H-6': -0.15,  // TOLL (opposite)
+        'N-5': -0.1    // LIMN (opposite)
+      }
+    ]
+  } as BinaryQuestion,
   {
-    id: 'music-2-intensity',
-    type: 'likert',
-    prompt: 'I prefer music with aggressive energy.',
+    id: 'music-2-listening',
+    type: 'binary',
+    prompt: 'When an album drops, you...',
     category: 'music',
-    scale: 5,
-    lowLabel: 'Strongly disagree',
-    highLabel: 'Strongly agree',
-    archetypeWeights: {
-      // High agreement
-      'C-4': 0.7,    // CULL - editorial
-      'H-6': 0.6,    // TOLL - advocacy
-      'R-10': 0.8,   // SCHISM - contrarian
-      // Low agreement
-      'L-3': -0.5,   // SILT - patient
-      'Ø': -0.4      // VOID - receptive
-    }
-  },
+    options: ['Play it front to back, no skips', 'Jump to the tracks that grab you'],
+    archetypeWeights: {},
+    optionWeights: [
+      // Front to back — calibration weights (gentle nudge)
+      {
+        'T-1': 0.3,    // STRATA - architectural
+        'P-7': 0.25,   // VAULT - archival
+        'L-3': 0.2,    // SILT - patient
+        'Ø': 0.15,     // VOID - receptive
+        'C-4': -0.15   // CULL (opposite)
+      },
+      // Jump to tracks
+      {
+        'C-4': 0.3,    // CULL - editorial
+        'F-9': 0.2,    // ANVIL - decisive
+        'D-8': 0.1,    // WICK - intuitive
+        'P-7': -0.15,  // VAULT (opposite)
+        'T-1': -0.1    // STRATA (opposite)
+      }
+    ]
+  } as BinaryQuestion,
   {
-    id: 'music-3-obscurity',
-    type: 'likert',
-    prompt: 'I lose interest once something becomes popular.',
+    id: 'music-3-depth',
+    type: 'binary',
+    prompt: 'You would rather know...',
     category: 'music',
-    scale: 5,
-    lowLabel: 'Strongly disagree',
-    highLabel: 'Strongly agree',
-    archetypeWeights: {
-      // High agreement
-      'V-2': 0.8,    // OMEN - prophetic
-      'R-10': 0.6,   // SCHISM - contrarian
-      'S-0': 0.5,    // KETH - standard-setting
-      // Low agreement
-      'H-6': -0.4,   // TOLL - advocacy
-      'N-5': -0.2    // LIMN - integrative
-    }
-  }
+    options: ['Every song by 5 artists', 'One song each by 500 artists'],
+    archetypeWeights: {},
+    optionWeights: [
+      // Deep (5 artists) — calibration weights (gentle nudge)
+      {
+        'P-7': 0.3,    // VAULT - archival depth
+        'L-3': 0.25,   // SILT - patient cultivation
+        'T-1': 0.2,    // STRATA - structural understanding
+        'S-0': 0.1,    // KETH - mastery
+        'H-6': -0.1    // TOLL (opposite)
+      },
+      // Wide (500 artists)
+      {
+        'V-2': 0.25,   // OMEN - scanning the horizon
+        'N-5': 0.25,   // LIMN - integrative breadth
+        'H-6': 0.2,    // TOLL - advocacy across range
+        'D-8': 0.15,   // WICK - channelling many sources
+        'P-7': -0.15   // VAULT (opposite)
+      }
+    ]
+  } as BinaryQuestion
 ];
 
 /**

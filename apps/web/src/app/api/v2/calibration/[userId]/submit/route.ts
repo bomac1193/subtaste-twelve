@@ -4,10 +4,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import {
-  reclassify,
-  createGenome,
+  updateGenomeWithSignals,
   toPublicGenome,
   PANTHEON,
+  ALL_DESIGNATIONS,
   type Signal,
   type ExplicitSignal,
   type Designation,
@@ -64,12 +64,21 @@ export async function POST(
       ? MUSIC_CALIBRATION_QUESTIONS
       : DEEP_CALIBRATION_QUESTIONS;
 
+    // Skip sentinel weights (uniform low-confidence)
+    const SKIP_WEIGHT = 0.025;
+    const SKIP_WEIGHTS: Record<string, number> = Object.fromEntries(
+      ALL_DESIGNATIONS.map(d => [d, SKIP_WEIGHT])
+    );
+
     // Convert responses to signals
     const signals: Signal[] = responses.map((r) => {
       const question = questions.find(q => q.id === r.questionId);
       let weights: Record<string, number> = {};
 
-      if (question) {
+      // Skip sentinel: -1 means user skipped this question
+      if (r.response === -1) {
+        weights = SKIP_WEIGHTS;
+      } else if (question) {
         if (question.type === 'binary') {
           const bq = question as BinaryQuestion;
           weights = bq.optionWeights?.[r.response as 0 | 1] || {};
@@ -86,8 +95,7 @@ export async function POST(
           const rq = question as RankingQuestion;
           const ranking = r.response as number[];
           ranking.forEach((itemIdx, rank) => {
-            const item = rq.items[itemIdx];
-            const itemWeights = item?.archetypeWeights || {};
+            const itemWeights = rq.itemWeights?.[itemIdx] || {};
             const rankWeight = 1 - (rank / ranking.length);
             Object.entries(itemWeights).forEach(([k, v]) => {
               weights[k] = (weights[k] || 0) + v * rankWeight;
@@ -109,50 +117,30 @@ export async function POST(
       };
     });
 
-    // Reclassify with new signals
-    const result = reclassify({
-      existingGenome: user.genome,
-      newSignals: signals,
-    });
-
-    // Create updated genome
-    const updatedGenome = createGenome({
-      userId,
-      classification: {
-        primary: {
-          designation: result.classification.primary.designation,
-          confidence: result.classification.primary.confidence,
-        },
-        secondary: result.classification.secondary ? {
-          designation: result.classification.secondary.designation,
-          confidence: result.classification.secondary.confidence,
-        } : null,
-        distribution: result.classification.distribution,
-      },
-      psychometrics: result.psychometrics,
-      sephiroticBalance: result.sephiroticBalance,
-      orishaResonance: result.orishaResonance,
-    });
+    // Merge calibration signals into existing genome (preserves history, keywords, etc.)
+    const updatedGenome = updateGenomeWithSignals(user.genome, signals);
 
     // Store and mark stage complete
-    await setUser(userId, { genome: updatedGenome });
+    await setUser(userId, { genome: updatedGenome }, 'calibration');
     await completeStage(userId, stage);
 
     const publicGenome = toPublicGenome(updatedGenome);
-    const archetype = PANTHEON[result.classification.primary.designation as Designation];
+    const designation = updatedGenome.archetype.primary.designation as Designation;
+    const archetype = PANTHEON[designation];
 
     return NextResponse.json({
       success: true,
       genome: publicGenome,
-      designation: result.classification.primary.designation,
+      designation,
       glyph: archetype.glyph,
-      confidence: result.classification.primary.confidence,
+      confidence: updatedGenome.archetype.primary.confidence,
       stageCompleted: stage,
     });
   } catch (error) {
-    console.error('Calibration error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Calibration error:', message, error);
     return NextResponse.json(
-      { error: 'Failed to process calibration' },
+      { error: `Failed to process calibration: ${message}` },
       { status: 500 }
     );
   }

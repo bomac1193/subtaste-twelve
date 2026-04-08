@@ -107,12 +107,12 @@ export function classify(input: ClassificationInput): ClassificationResult {
     primary: {
       designation: primary,
       glyph: toGlyph(primary),
-      confidence: primaryConfidence * overallConfidence
+      confidence: primaryConfidence
     },
     secondary: secondary ? {
       designation: secondary,
       glyph: toGlyph(secondary),
-      confidence: secondaryConfidence * overallConfidence
+      confidence: secondaryConfidence
     } : null,
     distribution: filtered
   };

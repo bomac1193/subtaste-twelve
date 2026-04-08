@@ -112,7 +112,7 @@ export const PANTHEON: Record<Designation, ArchetypeDefinition> = {
     phase: 'flow',
     wuXingElement: 'water',
     growthTarget: 'V-2',
-    stressTarget: 'Ø'
+    stressTarget: 'D-8'
   },
 
   'H-6': {

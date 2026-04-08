@@ -15,8 +15,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { extractApiKey, verifyApiKey, hasPermission } from '@/lib/api-auth';
 import { getUser, setUser, incrementSignals } from '@/lib/storage-prisma';
 import {
-  reclassify,
-  createGenome,
+  updateGenomeWithSignals,
   type Signal,
   type ImplicitSignal
 } from '@subtaste/core';
@@ -84,7 +83,7 @@ export async function POST(request: NextRequest) {
 
     // Convert to Signal format
     const processedSignals: Signal[] = signals.map((s) => ({
-      type: 'implicit' as const,
+      type: 'intentional_implicit' as const,
       source: 'behaviour' as const,
       timestamp: new Date(),
       data: {
@@ -99,34 +98,10 @@ export async function POST(request: NextRequest) {
     // Increment signal count
     const newCount = await incrementSignals(authResult.userId, signals.length);
 
-    // If genome exists, reclassify
+    // If genome exists, merge new signals (preserves all existing data)
     if (user.genome) {
-      const result = reclassify({
-        existingGenome: user.genome,
-        newSignals: processedSignals
-      });
-
-      const updatedGenome = createGenome({
-        userId: authResult.userId,
-        classification: {
-          primary: {
-            designation: result.classification.primary.designation,
-            confidence: result.classification.primary.confidence
-          },
-          secondary: result.classification.secondary
-            ? {
-                designation: result.classification.secondary.designation,
-                confidence: result.classification.secondary.confidence
-              }
-            : null,
-          distribution: result.classification.distribution
-        },
-        psychometrics: result.psychometrics,
-        sephiroticBalance: result.sephiroticBalance,
-        orishaResonance: result.orishaResonance
-      });
-
-      await setUser(authResult.userId, { genome: updatedGenome });
+      const updatedGenome = updateGenomeWithSignals(user.genome, processedSignals);
+      await setUser(authResult.userId, { genome: updatedGenome }, 'signals');
     }
 
     return NextResponse.json({

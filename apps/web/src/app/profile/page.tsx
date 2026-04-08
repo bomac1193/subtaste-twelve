@@ -292,7 +292,7 @@ export default function ProfilePage() {
                           </div>
                         );
                       })()}
-                      {dominant.stressTarget && dominant.stressTarget !== 'Ø' && (() => {
+                      {dominant.stressTarget && (() => {
                         const stress = PANTHEON[dominant.stressTarget!];
                         return (
                           <div className="flex-1">
@@ -306,17 +306,6 @@ export default function ProfilePage() {
                           </div>
                         );
                       })()}
-                      {dominant.stressTarget === 'Ø' && (
-                        <div className="flex-1">
-                          <p className="text-[10px] tracking-wider text-bone-faint/50 mb-1">Under Stress</p>
-                          <p className="text-bone-muted/60 text-xs">
-                            {titleCase(PANTHEON['Ø'].glyph)} <span className="font-mono text-bone-faint">Ø</span>
-                          </p>
-                          <p className="text-bone-faint text-[10px] mt-0.5 leading-relaxed">
-                            May withdraw into receptive silence.
-                          </p>
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>
@@ -361,9 +350,6 @@ export default function ProfilePage() {
                     <h3 className="font-display text-2xl text-bone-faint mb-2">{titleCase(shadow.glyph)}</h3>
                     <p className="text-bone-faint/60 font-mono text-sm tracking-wider mb-1">{shadow.symbol}</p>
                     <p className="text-bone-faint text-sm italic">{shadow.creativeMode}</p>
-                    <p className="text-bone-faint/40 text-xs font-mono mt-2">
-                      {((genome.distribution?.[shadowDesignation] ?? 0) * 100).toFixed(1)}%
-                    </p>
                   </div>
 
                   {/* Body */}
@@ -371,15 +357,11 @@ export default function ProfilePage() {
                     <p className="text-bone-faint text-sm leading-relaxed">{shadow.essence}</p>
                     <p className="text-bone-faint text-xs leading-relaxed">
                       Under pressure, your dominant archetype collapses toward {titleCase(shadow.glyph)}.
-                      {shadowDesignation === 'Ø'
-                        ? ' This manifests as withdrawal into receptive silence, disengaging from active curation.'
-                        : ` This manifests as over-relying on ${shadow.creativeMode.toLowerCase()} patterns at the expense of your natural strengths.`}
+                      {` This manifests as over-relying on ${shadow.creativeMode.toLowerCase()} patterns at the expense of your natural strengths.`}
                     </p>
                     <p className="text-bone-faint text-xs leading-relaxed">
                       Awareness of this tendency is the antidote. When you notice yourself defaulting to
-                      {shadowDesignation === 'Ø'
-                        ? ' passivity'
-                        : ` ${shadow.creativeMode.toLowerCase()} reflexes`}, pause and re-engage your dominant mode.
+                      {` ${shadow.creativeMode.toLowerCase()} reflexes`}, pause and re-engage your dominant mode.
                     </p>
                   </div>
                 </div>

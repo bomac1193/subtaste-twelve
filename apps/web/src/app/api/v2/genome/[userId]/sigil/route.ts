@@ -23,12 +23,12 @@ export async function POST(
 
   await revealSigil(userId);
 
-  const designation = user.genome.classification.primary.designation;
+  const designation = user.genome.archetype.primary.designation;
   const archetype = PANTHEON[designation as Designation];
 
   return NextResponse.json({
     success: true,
-    sigil: archetype.sigil,
+    sigil: archetype.seal,
     designation: designation,
   });
 }
@@ -55,11 +55,11 @@ export async function GET(
     });
   }
 
-  const designation = user.genome.classification.primary.designation;
+  const designation = user.genome.archetype.primary.designation;
   const archetype = PANTHEON[designation as Designation];
 
   return NextResponse.json({
     revealed: true,
-    sigil: archetype.sigil,
+    sigil: archetype.seal,
   });
 }

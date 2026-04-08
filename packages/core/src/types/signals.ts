@@ -18,6 +18,8 @@ export type SignalType = 'explicit' | 'intentional_implicit' | 'unintentional_im
 export type SignalSource =
   | 'quiz'           // Initial profiling quiz
   | 'calibration'    // Follow-up calibration
+  | 'training'       // Training scenarios
+  | 'behaviour'      // Behavioral signals (save, skip, share, etc.)
   | 'swipe'          // Swipe interactions
   | 'feed'           // Feed engagement
   | 'content'        // Content interaction

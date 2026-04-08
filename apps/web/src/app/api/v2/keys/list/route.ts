@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    if (!(session?.user as any)?.id) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
 
     // Get all API keys for this user
     const apiKeys = await prisma.apiKey.findMany({
-      where: { userId: session.user.id },
+      where: { userId: (session!.user as any).id },
       select: {
         id: true,
         name: true,

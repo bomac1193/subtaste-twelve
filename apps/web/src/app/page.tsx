@@ -64,7 +64,7 @@ export default function HomePage() {
           transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
         >
           <h1 className="font-display text-4xl md:text-5xl text-bone">
-            The Twelve
+            Subtaste
           </h1>
         </motion.div>
 

@@ -483,7 +483,7 @@ export default function TrainingPage() {
             <TrainingCard
               card={currentCard}
               onSubmit={handleCardSubmit}
-              disabled={state === 'processing'}
+              disabled={(state as string) === 'processing'}
               initialBestId={currentSubmission?.bestId}
               initialWorstId={currentSubmission?.worstId}
               showBack={currentIndex > 0}
@@ -499,7 +499,7 @@ export default function TrainingPage() {
               <button
                 type="button"
                 className="text-bone-faint text-xs hover:text-bone-muted transition-colors"
-                disabled={state === 'processing'}
+                disabled={(state as string) === 'processing'}
                 onClick={() => {
                   if (session) {
                     saveCheckpoint({
@@ -521,7 +521,7 @@ export default function TrainingPage() {
           </motion.div>
         )}
 
-        {state === 'processing' && !currentCard && (
+        {(state as string) === 'processing' && !currentCard && (
           <motion.div
             key="processing"
             className="container-sm page-padding text-center"

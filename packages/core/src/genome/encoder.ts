@@ -16,7 +16,14 @@ import { extractMotivationDeltas, applyMotivationDeltas, getDefaultMotivation } 
 import { extractSocialDeltas, applySocialDeltas, getDefaultSocial } from '../engine/social';
 
 /**
- * Encode signals into a new TasteGenome
+ * WARNING: encodeSignalsToGenome() creates a BRAND NEW genome (calls createGenome internally).
+ * It DESTROYS all existing data if used to replace an existing genome.
+ *
+ * ONLY use this for:
+ * - First-time genome creation in the profiler orchestrator
+ * - Never for calibration, attunements, or signal processing on existing users
+ *
+ * For updating an existing genome, use updateGenomeWithSignals() below.
  */
 export function encodeSignalsToGenome(
   userId: string,
@@ -44,17 +51,36 @@ export function encodeSignalsToGenome(
 }
 
 /**
- * Update an existing genome with new signals
+ * Update an existing genome with new signals.
+ * This is the SAFE way to evolve a genome — it preserves all existing data
+ * (signal history, keywords, gamification, axes, iching, etc.) while merging in new signals.
+ *
+ * Use this for: calibration, attunements, behavioral signals, any post-creation update.
+ * Do NOT use createGenome() or encodeSignalsToGenome() for existing users.
  */
 export function updateGenomeWithSignals(
   genome: TasteGenome,
   newSignals: Signal[]
 ): TasteGenome {
-  // Combine existing psychometrics with new signals
+  // Guard: prevent being called with a null/undefined/invalid genome
+  if (!genome?.archetype || !genome?._engine || !genome?.behaviour) {
+    throw new Error(
+      'updateGenomeWithSignals: invalid genome passed — missing archetype, _engine, or behaviour. ' +
+      'Use createGenome() for first-time users who have no genome yet.'
+    );
+  }
+
+  // Classify from FULL accumulated signal history + new signals.
+  // This ensures each calibration refines rather than replaces.
+  const allSignals: Signal[] = [
+    ...genome.behaviour.signalHistory,
+    ...newSignals
+  ];
   const result = classify({
-    signals: newSignals,
+    signals: allSignals,
     existingPsychometrics: genome._engine.psychometrics
   });
+  const finalClassification = result.classification;
 
   const now = new Date();
 
@@ -86,7 +112,7 @@ export function updateGenomeWithSignals(
     version: genome.version + 1,
     updatedAt: now,
 
-    archetype: result.classification,
+    archetype: finalClassification,
 
     _engine: {
       ...genome._engine,
@@ -98,7 +124,7 @@ export function updateGenomeWithSignals(
     behaviour: {
       ...genome.behaviour,
       signalHistory: [...genome.behaviour.signalHistory, ...signalEvents].slice(-1000), // Keep last 1000
-      confidence: result.classification.primary.confidence,
+      confidence: finalClassification.primary.confidence,
       lastCalibration: now
     },
 

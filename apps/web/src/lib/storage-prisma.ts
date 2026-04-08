@@ -68,10 +68,12 @@ export async function getUser(userId: string): Promise<UserData | null> {
 
 /**
  * Update user data in database
+ * Every genome write is versioned automatically.
  */
 export async function setUser(
   userId: string,
-  data: Partial<UserData>
+  data: Partial<UserData>,
+  trigger: string = 'unknown'
 ): Promise<void> {
   try {
     const existing = await getUser(userId);
@@ -126,6 +128,13 @@ export async function setUser(
           createdAt: new Date()
         }
       });
+    }
+
+    // Save version snapshot (non-blocking — don't fail the main write)
+    if (genome) {
+      saveGenomeVersion(userId, genome, trigger).catch(err =>
+        console.error('Failed to save genome version:', err)
+      );
     }
   } catch (error) {
     console.error('Failed to set user:', error);
@@ -264,6 +273,12 @@ export async function revealSigil(userId: string): Promise<boolean> {
  */
 export async function resetUserProfile(userId: string): Promise<boolean> {
   try {
+    // Save version before reset so the old genome can be recovered
+    const existing = await getUser(userId);
+    if (existing?.genome) {
+      await saveGenomeVersion(userId, existing.genome, 'reset');
+    }
+
     await prisma.tasteGenome.updateMany({
       where: { userId },
       data: {
@@ -282,5 +297,121 @@ export async function resetUserProfile(userId: string): Promise<boolean> {
   } catch (error) {
     console.error('Failed to reset user profile:', error);
     return false;
+  }
+}
+
+// ============================================================================
+// GENOME VERSIONING
+// ============================================================================
+
+const MAX_VERSIONS_PER_USER = 50;
+
+/**
+ * Save a genome version snapshot
+ */
+async function saveGenomeVersion(
+  userId: string,
+  genome: TasteGenome,
+  trigger: string
+): Promise<void> {
+  try {
+    await prisma.genomeVersion.create({
+      data: {
+        userId,
+        genome: genome as any,
+        trigger,
+        primary: genome.archetype?.primary?.designation || null,
+        secondary: genome.archetype?.secondary?.designation || null,
+        confidence: genome.archetype?.primary?.confidence || 0,
+        signalCount: genome.behaviour?.signalHistory?.length || 0,
+        version: genome.version || 1,
+      }
+    });
+
+    // Prune old versions beyond the limit
+    const versions = await prisma.genomeVersion.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true },
+      skip: MAX_VERSIONS_PER_USER,
+    });
+
+    if (versions.length > 0) {
+      await prisma.genomeVersion.deleteMany({
+        where: { id: { in: versions.map(v => v.id) } }
+      });
+    }
+  } catch (error) {
+    console.error('Failed to save genome version:', error);
+  }
+}
+
+/**
+ * List genome versions for a user
+ */
+export async function listGenomeVersions(
+  userId: string,
+  limit: number = 20
+): Promise<Array<{
+  id: string;
+  trigger: string;
+  primary: string | null;
+  secondary: string | null;
+  confidence: number;
+  signalCount: number;
+  version: number;
+  createdAt: Date;
+}>> {
+  try {
+    return await prisma.genomeVersion.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      select: {
+        id: true,
+        trigger: true,
+        primary: true,
+        secondary: true,
+        confidence: true,
+        signalCount: true,
+        version: true,
+        createdAt: true,
+      }
+    });
+  } catch (error) {
+    console.error('Failed to list genome versions:', error);
+    return [];
+  }
+}
+
+/**
+ * Restore a genome from a specific version
+ */
+export async function restoreGenomeVersion(
+  userId: string,
+  versionId: string
+): Promise<TasteGenome | null> {
+  try {
+    const version = await prisma.genomeVersion.findFirst({
+      where: { id: versionId, userId }
+    });
+
+    if (!version) return null;
+
+    const genome = version.genome as unknown as TasteGenome;
+
+    // Save the current genome as a version before restoring
+    const current = await getUser(userId);
+    if (current?.genome) {
+      await saveGenomeVersion(userId, current.genome, 'pre-restore');
+    }
+
+    // Write the restored genome
+    await setUser(userId, { genome }, 'restore');
+
+    return genome;
+  } catch (error) {
+    console.error('Failed to restore genome version:', error);
+    return null;
   }
 }
